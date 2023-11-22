@@ -1,7 +1,12 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import redis from "../../utils/redis";
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { headers } from "next/headers";
+import { existsSync } from "fs";
+import fs from "fs/promises";
+import path from "path";
+
 
 // Create a new ratelimiter, that allows 5 requests per 24 hours
 const ratelimit = redis
@@ -12,82 +17,125 @@ const ratelimit = redis
     })
   : undefined;
 
-export async function POST(request: Request) {
-  // Rate Limiter Code
-  if (ratelimit) {
-    const headersList = headers();
-    const ipIdentifier = headersList.get("x-real-ip");
+ 
+  
+export async function POST(req: NextRequest) {
+  console.log('reach generate')
+  const formData = await req.formData();
+  console.log(formData);
 
-    const result = await ratelimit.limit(ipIdentifier ?? "");
+  const f = formData.get("file");
 
-    if (!result.success) {
-      return new Response(
-        "Too many uploads in 1 day. Please try again in a 24 hours.",
-        {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": result.limit,
-            "X-RateLimit-Remaining": result.remaining,
-          } as any,
-        }
-      );
-    }
+  if (!f) {
+    return NextResponse.json({}, { status: 400 });
   }
 
-  const { imageUrl, theme, room } = await request.json();
+  const file = f as File;
+  console.log(`File name: ${file.name}`);
+  console.log(`Content-Length: ${file.size}`);
 
-  // POST request to Replicate to start the image restoration generation process
-  let startResponse = await fetch("https://api.replicate.com/v1/predictions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Token " + process.env.REPLICATE_API_KEY,
-    },
-    body: JSON.stringify({
-      version:
-        "854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b",
-      input: {
-        image: imageUrl,
-        prompt:
-          room === "Gaming Room"
-            ? "a room for gaming with gaming computers, gaming consoles, and gaming chairs"
-            : `a ${theme.toLowerCase()} ${room.toLowerCase()}`,
-        a_prompt:
-          "best quality, extremely detailed, photo from Pinterest, interior, cinematic photo, ultra-detailed, ultra-realistic, award-winning",
-        n_prompt:
-          "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality",
-      },
-    }),
-  });
+  const response = await fetch('http://localhost:5000', {
+        method: 'POST',
+        body: formData,
+      });
+  // console.log("response:", response)
 
-  let jsonStartResponse = await startResponse.json();
+  const destinationDirPath = path.join(process.cwd(), "data");
+  console.log(destinationDirPath);
 
-  let endpointUrl = jsonStartResponse.urls.get;
+  const fileArrayBuffer = await file.arrayBuffer();
 
-  // GET request to get the status of the image restoration process & return the result when it's ready
-  let restoredImage: string | null = null;
-  while (!restoredImage) {
-    // Loop in 1s intervals until the alt text is ready
-    console.log("polling for result...");
-    let finalResponse = await fetch(endpointUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Token " + process.env.REPLICATE_API_KEY,
-      },
-    });
-    let jsonFinalResponse = await finalResponse.json();
-
-    if (jsonFinalResponse.status === "succeeded") {
-      restoredImage = jsonFinalResponse.output;
-    } else if (jsonFinalResponse.status === "failed") {
-      break;
-    } else {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+  if (!existsSync(destinationDirPath)) {
+    fs.mkdir(destinationDirPath, { recursive: true });
   }
-
-  return NextResponse.json(
-    restoredImage ? restoredImage : "Failed to restore image"
+  await fs.writeFile(
+    path.join(destinationDirPath, file.name),
+    Buffer.from(fileArrayBuffer)
   );
+
+  return NextResponse.json({
+    fileName: file.name,
+    size: file.size,
+    lastModified: new Date(file.lastModified),
+  });
 }
+
+// export async function POST(request: Request) {
+//   // Rate Limiter Code
+//   if (ratelimit) {
+//     const headersList = headers();
+//     const ipIdentifier = headersList.get("x-real-ip");
+
+//     const result = await ratelimit.limit(ipIdentifier ?? "");
+
+//     if (!result.success) {
+//       return new Response(
+//         "Too many uploads in 1 day. Please try again in a 24 hours.",
+//         {
+//           status: 429,
+//           headers: {
+//             "X-RateLimit-Limit": result.limit,
+//             "X-RateLimit-Remaining": result.remaining,
+//           } as any,
+//         }
+//       );
+//     }
+//   }
+
+//   const { imageUrl, theme, room } = await request.json();
+
+//   // POST request to Replicate to start the image restoration generation process
+//   let startResponse = await fetch("https://api.replicate.com/v1/predictions", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: "Token " + process.env.REPLICATE_API_KEY,
+//     },
+//     body: JSON.stringify({
+//       version:
+//         "854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b",
+//       input: {
+//         image: imageUrl,
+//         prompt:
+//           room === "Gaming Room"
+//             ? "a room for gaming with gaming computers, gaming consoles, and gaming chairs"
+//             : `a ${theme.toLowerCase()} ${room.toLowerCase()}`,
+//         a_prompt:
+//           "best quality, extremely detailed, photo from Pinterest, interior, cinematic photo, ultra-detailed, ultra-realistic, award-winning",
+//         n_prompt:
+//           "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality",
+//       },
+//     }),
+//   });
+
+//   let jsonStartResponse = await startResponse.json();
+
+//   let endpointUrl = jsonStartResponse.urls.get;
+
+//   // GET request to get the status of the image restoration process & return the result when it's ready
+//   let restoredImage: string | null = null;
+//   while (!restoredImage) {
+//     // Loop in 1s intervals until the alt text is ready
+//     console.log("polling for result...");
+//     let finalResponse = await fetch(endpointUrl, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: "Token " + process.env.REPLICATE_API_KEY,
+//       },
+//     });
+//     let jsonFinalResponse = await finalResponse.json();
+
+//     if (jsonFinalResponse.status === "succeeded") {
+//       restoredImage = jsonFinalResponse.output;
+//     } else if (jsonFinalResponse.status === "failed") {
+//       break;
+//     } else {
+//       await new Promise((resolve) => setTimeout(resolve, 1000));
+//     }
+//   }
+
+//   return NextResponse.json(
+//     restoredImage ? restoredImage : "Failed to restore image"
+//   );
+// }

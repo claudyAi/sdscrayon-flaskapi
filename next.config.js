@@ -13,4 +13,28 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = (phase, { defaultConfig }) => {
+  return {
+    ...defaultConfig,
+    images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'upcdn.io',
+        },
+      ],
+    },
+
+    webpack: (config) => {
+      config.resolve = {
+        ...config.resolve,
+        fallback: {
+          "fs": false,
+          "path": false,
+          "os": false,
+        }
+      }
+      return config
+    },
+  }
+}
