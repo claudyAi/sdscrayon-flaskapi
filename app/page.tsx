@@ -13,7 +13,7 @@ export default function HomePage() {
           Estimate{" "}
           <span className="relative whitespace-nowrap text-blue-600">
             <SquigglyLines />
-            <span className="relative">AGBD values</span>
+            <span className="relative">AGBM values</span>
           </span>{" "}
           using Ai
         </h1>
@@ -25,7 +25,7 @@ export default function HomePage() {
           className="bg-blue-600 rounded-xl text-white font-medium px-4 py-3 sm:mt-10 mt-8 hover:bg-blue-500 transition"
           href="/agbm"
         >
-          Generate AGBM values
+          Click Here to Generate AGBM values
         </Link>
         <div className="flex justify-between items-center w-full flex-col sm:mt-10 mt-6">
           <div className="flex flex-col space-y-10 mt-4 mb-16">

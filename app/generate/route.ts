@@ -23,41 +23,47 @@ export async function POST(req: NextRequest) {
   console.log('reach generate')
   const formData = await req.formData();
   console.log(formData);
+  const fileEntries = formData.getAll('file');
+  const fileLength = fileEntries.length;
+  console.log('Number of files:', fileLength);
+  const filesData = [];
+  console.log('file entry:', fileEntries);
+  for (let i = 0; i < fileLength; i++) {
+    const f = fileEntries[i];
+    console.log('f:', f);
 
-  const f = formData.get("file");
+    if (!f) {
+      return NextResponse.json({}, { status: 400 });
+    }
 
-  if (!f) {
-    return NextResponse.json({}, { status: 400 });
-  }
+    const file = f as File;
+    console.log(`File name: ${file.name}`);
+    console.log(`Content-Length: ${file.size}`);
 
-  const file = f as File;
-  console.log(`File name: ${file.name}`);
-  console.log(`Content-Length: ${file.size}`);
+    const destinationDirPath = path.join(process.cwd(), "data");
+    console.log(destinationDirPath);
 
-  const response = await fetch('http://localhost:5000', {
-        method: 'POST',
-        body: formData,
-      });
-  // console.log("response:", response)
+    const fileArrayBuffer = await file.arrayBuffer();
 
-  const destinationDirPath = path.join(process.cwd(), "data");
-  console.log(destinationDirPath);
+    if (!existsSync(destinationDirPath)) {
+      fs.mkdir(destinationDirPath, { recursive: true });
+    }
+    await fs.writeFile(
+      path.join(destinationDirPath, file.name),
+      Buffer.from(fileArrayBuffer)
+    );
 
-  const fileArrayBuffer = await file.arrayBuffer();
+    filesData.push({
+      fileName: file.name,
+      size: file.size,
+      lastModified: new Date(file.lastModified),
+    }); }
 
-  if (!existsSync(destinationDirPath)) {
-    fs.mkdir(destinationDirPath, { recursive: true });
-  }
-  await fs.writeFile(
-    path.join(destinationDirPath, file.name),
-    Buffer.from(fileArrayBuffer)
-  );
+    const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'GET',
+        });
 
-  return NextResponse.json({
-    fileName: file.name,
-    size: file.size,
-    lastModified: new Date(file.lastModified),
-  });
+  return NextResponse.json(filesData);
 }
 
 // export async function POST(request: Request) {

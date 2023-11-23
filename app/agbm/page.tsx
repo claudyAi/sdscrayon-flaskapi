@@ -49,16 +49,22 @@ export default function AGBM() {
   console.log("start");    
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <form action="/generate" method="post" encType="multipart/form-data">
-        <input type="file" name="file" required />
-        <button
-        className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md"
-      >
-        Upload
-      </button>
-      </form>
-    </main>
+    <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
+      <Header />
+
+      <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 sm:mt-20 mt-20 background-gradient">
+        <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
+          Generate <span className="text-blue-600">AGBM predictions </span> from
+          .tif
+        </h1>
+        <form action="/generate" method="post" encType="multipart/form-data">
+          <input type="file" name="file" multiple />
+          <button className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md">
+            Upload
+          </button>
+        </form>
+      </main>
+    </div>
   );
 }
 
