@@ -15,10 +15,6 @@ import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 
-import { NextResponse } from "next/server";
-import path from "path";
-import { writeFile } from "fs/promises";
-import { exec } from 'child_process';
 
 
 const options: UploadWidgetConfig = {
@@ -45,214 +41,241 @@ const options: UploadWidgetConfig = {
   },
 };
 
-export default function AGBM() {
-  console.log("start");    
-
-  return (
-    <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
-      <Header />
-
-      <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 sm:mt-20 mt-20 background-gradient">
-        <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
-          Generate <span className="text-blue-600">AGBM predictions </span> from
-          .tif
-        </h1>
-        <form action="/generate" method="post" encType="multipart/form-data">
-          <input type="file" name="file" multiple />
-          <button className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md">
-            Upload
-          </button>
-        </form>
-      </main>
-    </div>
-  );
-}
-
 // export default function AGBM() {
-//   const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
-//   const [restoredImage, setRestoredImage] = useState<string | null>(null);
-//   const [loading, setLoading] = useState<boolean>(false);
-//   const [restoredLoaded, setRestoredLoaded] = useState<boolean>(false);
-//   const [sideBySide, setSideBySide] = useState<boolean>(false);
-//   const [error, setError] = useState<string | null>(null);
-//   const [photoName, setPhotoName] = useState<string | null>(null);
-//   const [theme, setTheme] = useState("defaultTheme");
-//   const [room, setRoom] = useState("defaultRoom");
-
-//   const UploadDropZone = () => (
-//     <UploadDropzone
-//       options={options}
-//       onUpdate={({ uploadedFiles }) => {
-//         if (uploadedFiles.length !== 0) {
-//           const image = uploadedFiles[0];
-//           const imageName = image.originalFile.originalFileName;
-//           const imageUrl = UrlBuilder.url({
-//             accountId: image.accountId,
-//             filePath: image.filePath,
-//             options: {
-//               transformation: "preset",
-//               transformationPreset: "thumbnail",
-//             },
-//           });
-//           setPhotoName(imageName);
-//           setOriginalPhoto(imageUrl);
-//           generatePhoto(imageUrl);
-//         }
-//       }}
-//       width="670px"
-//       height="250px"
-//     />
-//   );
-
-//   async function generatePhoto(fileUrl: string) {
-//     await new Promise((resolve) => setTimeout(resolve, 200));
-//     setLoading(true);
-//     const res = await fetch("/generate", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ imageUrl: fileUrl, theme, room }),
-//     });
-
-//     let newPhoto = await res.json();
-//     if (res.status !== 200) {
-//       setError(newPhoto);
-//     } else {
-//       setRestoredImage(newPhoto[1]);
-//     }
-//     setTimeout(() => {
-//       setLoading(false);
-//     }, 1300);
-//   }
+//   console.log("start");    
 
 //   return (
 //     <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
 //       <Header />
-//       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8">
+
+//       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 sm:mt-20 mt-20 background-gradient">
 //         <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
 //           Generate <span className="text-blue-600">AGBM predictions </span> from
 //           .tif
 //         </h1>
-//         <ResizablePanel>
-//           <AnimatePresence mode="wait">
-//             <motion.div className="flex justify-between items-center w-full flex-col mt-4">
-//               {!restoredImage && (
-//                 <>
-//                   <div className="mt-4 w-full max-w-sm"></div>
-//                 </>
-//               )}
-//               {restoredImage && (
-//                 <div>
-//                   Here's your remodeled <b>{room.toLowerCase()}</b> in the{" "}
-//                   <b>{theme.toLowerCase()}</b> theme!{" "}
-//                 </div>
-//               )}
-//               <div
-//                 className={`${
-//                   restoredLoaded ? "visible mt-6 -ml-8" : "invisible"
-//                 }`}
-//               >
-//                 <Toggle
-//                   className={`${restoredLoaded ? "visible mb-6" : "invisible"}`}
-//                   sideBySide={sideBySide}
-//                   setSideBySide={(newVal) => setSideBySide(newVal)}
-//                 />
-//               </div>
-//               {restoredLoaded && sideBySide && (
-//                 <CompareSlider
-//                   original={originalPhoto!}
-//                   restored={restoredImage!}
-//                 />
-//               )}
-//               {!originalPhoto && <UploadDropZone />}
-//               {originalPhoto && !restoredImage && (
-//                 <Image
-//                   alt="original photo"
-//                   src={originalPhoto}
-//                   className="rounded-2xl h-96"
-//                   width={475}
-//                   height={475}
-//                 />
-//               )}
-//               {restoredImage && originalPhoto && !sideBySide && (
-//                 <div className="flex sm:space-x-4 sm:flex-row flex-col">
-//                   <div>
-//                     <h2 className="mb-1 font-medium text-lg">Original Room</h2>
-//                     <Image
-//                       alt="original photo"
-//                       src={originalPhoto}
-//                       className="rounded-2xl relative w-full h-96"
-//                       width={475}
-//                       height={475}
-//                     />
-//                   </div>
-//                   <div className="sm:mt-0 mt-8">
-//                     <h2 className="mb-1 font-medium text-lg">Generated Room</h2>
-//                     <a href={restoredImage} target="_blank" rel="noreferrer">
-//                       <Image
-//                         alt="restored photo"
-//                         src={restoredImage}
-//                         className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
-//                         width={475}
-//                         height={475}
-//                         onLoadingComplete={() => setRestoredLoaded(true)}
-//                       />
-//                     </a>
-//                   </div>
-//                 </div>
-//               )}
-//               {loading && (
-//                 <button
-//                   disabled
-//                   className="bg-blue-500 rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 w-40"
-//                 >
-//                   <span className="pt-4">
-//                     <LoadingDots color="white" style="large" />
-//                   </span>
-//                 </button>
-//               )}
-//               {error && (
-//                 <div
-//                   className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mt-8"
-//                   role="alert"
-//                 >
-//                   <span className="block sm:inline">{error}</span>
-//                 </div>
-//               )}
-//               <div className="flex space-x-2 justify-center">
-//                 {originalPhoto && !loading && (
-//                   <button
-//                     onClick={() => {
-//                       setOriginalPhoto(null);
-//                       setRestoredImage(null);
-//                       setRestoredLoaded(false);
-//                       setError(null);
-//                     }}
-//                     className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"
-//                   >
-//                     Generate New Room
-//                   </button>
-//                 )}
-//                 {restoredLoaded && (
-//                   <button
-//                     onClick={() => {
-//                       downloadPhoto(
-//                         restoredImage!,
-//                         appendNewToName(photoName!)
-//                       );
-//                     }}
-//                     className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
-//                   >
-//                     Download Generated Room
-//                   </button>
-//                 )}
-//               </div>
-//             </motion.div>
-//           </AnimatePresence>
-//         </ResizablePanel>
+//         <form action="/generate" method="post" encType="multipart/form-data">
+//           <input type="file" name="file" multiple />
+//           <button className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md">
+//             Upload
+//           </button>
+//         </form>
 //       </main>
-//       <Footer />
 //     </div>
 //   );
 // }
+
+// import Image from 'next/image';
+// import fs from 'fs';
+// import { promisify } from 'util';
+
+// const Jimp = require('jimp');
+
+// async function convertTiffToJpeg(tiffFilePath: string, jpegFilePath: string) {
+//   try {
+//     const tiffImage = await Jimp.read(tiffFilePath);
+//     await tiffImage.quality(100).writeAsync(jpegFilePath); // Save as JPEG with specified quality (100 is maximum)
+
+//     console.log('Conversion successful');
+//   } catch (error) {
+//     console.error('Error converting TIFF to JPEG:', error);
+//   }
+// }
+
+// // Usage example
+// const tiffFilePath = 'd/S_k_2_2017_5.tif'; // Replace with your TIFF file path
+// const jpegFilePath = 'djpg/S_k_2_2017_5.jpg'; // Replace with the path to save the converted JPEG file
+
+// convertTiffToJpeg(tiffFilePath, jpegFilePath);
+
+
+export default function AGBM() {
+  const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
+  const [restoredImage, setRestoredImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [restoredLoaded, setRestoredLoaded] = useState<boolean>(false);
+  const [sideBySide, setSideBySide] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [photoName, setPhotoName] = useState<string | null>(null);
+  const [theme, setTheme] = useState("defaultTheme");
+  const [room, setRoom] = useState("defaultRoom");
+
+  const UploadDropZone = () => (
+    <UploadDropzone
+      options={options}
+      onUpdate={({ uploadedFiles }) => {
+        if (uploadedFiles.length !== 0) {
+          console.log("uploaded files",uploadedFiles);
+          const image = uploadedFiles[0];
+          console.log("image",image);
+          console.log("hi");
+          const imageName: string = image.originalFile.originalFileName!;
+          const imageUrl = UrlBuilder.url({
+            accountId: image.accountId,
+            filePath: image.filePath,
+            options: {
+              transformation: "preset",
+              transformationPreset: "thumbnail",
+            },
+          });
+          console.log(imageUrl);
+          setPhotoName(imageName);
+          setOriginalPhoto(imageUrl);
+          generatePhoto(imageUrl,image);
+        }
+      }}
+      width="670px"
+      height="250px"
+    />
+  );
+
+  async function generatePhoto(fileUrl: string, image: any) {
+    console.log("generate")
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    setLoading(true);
+    const res = await fetch("/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ imageUrl: fileUrl, theme, room, image}),
+    });
+    console.log(res);
+    let newPhoto = await res.json();
+    console.log('new photo', newPhoto);
+    if (res.status !== 200) {
+      setError(newPhoto);
+    } else {
+      setRestoredImage(newPhoto["restoredImage"]);
+      setOriginalPhoto(newPhoto["originalPhoto"]);
+    }
+    setTimeout(() => {
+      setLoading(false);
+    }, 1300);
+    console.log(newPhoto["restoredImage"]);
+    console.log(newPhoto["originalPhoto"]);
+  }
+
+  return (
+    <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
+      <Header />
+      <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8">
+        <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
+          Generate <span className="text-blue-600">AGBM predictions </span> from
+          .tif
+        </h1>
+        <ResizablePanel>
+          <AnimatePresence mode="wait">
+            <motion.div className="flex justify-between items-center w-full flex-col mt-4">
+              {!restoredImage && (
+                <>
+                  <div className="mt-4 w-full max-w-sm"></div>
+                </>
+              )}
+              <div
+                className={`${
+                  restoredLoaded ? "visible mt-6 -ml-8" : "invisible"
+                }`}
+              >
+                <Toggle
+                  className={`${restoredLoaded ? "visible mb-6" : "invisible"}`}
+                  sideBySide={sideBySide}
+                  setSideBySide={(newVal) => setSideBySide(newVal)}
+                />
+              </div>
+              {restoredLoaded && sideBySide && (
+                <CompareSlider
+                  original={originalPhoto!}
+                  restored={restoredImage!}
+                />
+              )}
+              {!originalPhoto && <UploadDropZone />}
+              {originalPhoto && !restoredImage && (
+                <Image
+                  alt="original photo"
+                  src={originalPhoto}
+                  className="rounded-2xl h-96"
+                  width={475}
+                  height={475}
+                />
+              )}
+              {restoredImage && originalPhoto && !sideBySide && (
+                <div className="flex sm:space-x-4 sm:flex-row flex-col">
+                  <div>
+                    <h2 className="mb-1 font-medium text-lg">Uploaded Image</h2>
+                    <Image
+                      alt="original photo"
+                      src={originalPhoto}
+                      className="rounded-2xl relative w-full h-96"
+                      width={475}
+                      height={475}
+                    />
+                  </div>
+                  <div className="sm:mt-0 mt-8">
+                    <h2 className="mb-1 font-medium text-lg">Predicted Image</h2>
+                    <a href={restoredImage} target="_blank" rel="noreferrer">
+                      <Image
+                        alt="restored photo"
+                        src={restoredImage}
+                        className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
+                        width={475}
+                        height={475}
+                        onLoadingComplete={() => setRestoredLoaded(true)}
+                      />
+                    </a>
+                  </div>
+                </div>
+              )}
+              {loading && (
+                <button
+                  disabled
+                  className="bg-blue-500 rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 w-40"
+                >
+                  <span className="pt-4">
+                    <LoadingDots color="white" style="large" />
+                  </span>
+                </button>
+              )}
+              {error && (
+                <div
+                  className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mt-8"
+                  role="alert"
+                >
+                  <span className="block sm:inline">{error}</span>
+                </div>
+              )}
+              <div className="flex space-x-2 justify-center">
+                {originalPhoto && !loading && (
+                  <button
+                    onClick={() => {
+                      setOriginalPhoto(null);
+                      setRestoredImage(null);
+                      setRestoredLoaded(false);
+                      setError(null);
+                    }}
+                    className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"
+                  >
+                    Upload Another Image
+                  </button>
+                )}
+                {restoredLoaded && (
+                  <button
+                    onClick={() => {
+                      downloadPhoto(
+                        restoredImage!,
+                        appendNewToName(photoName!)
+                      );
+                    }}
+                    className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
+                  >
+                    Download Predicted Image
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </ResizablePanel>
+      </main>
+      <Footer />
+    </div>
+  );
+}
