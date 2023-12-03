@@ -151,7 +151,7 @@ class DS(torch.utils.data.Dataset):  # set the input images in correct format to
         return imgs, mask, file_name
 
 
-def process_image():
+def main():
     args = parse_args()
     print(args)
 
@@ -159,7 +159,7 @@ def process_image():
 
     # loads model from a pth file from the location specified in args.model_path
 
-    model = torch.load("./api/modelo_best.pth", map_location="cpu")
+    model = torch.load("./modelo_best.pth", map_location="cpu")
     model = model.eval()
     # model = model.cuda()
     model = model.to(memory_format=torch.channels_last)
@@ -214,5 +214,5 @@ def process_image():
     # frontend needs to recieve the image from here
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

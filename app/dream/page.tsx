@@ -19,10 +19,10 @@ import { roomType, rooms, themeType, themes } from "../../utils/dropdownTypes";
 
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-      ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-      : "free",
+    ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+    : "free",
   maxFileCount: 1,
-  mimeTypes: ["image/jpeg", "image/png", "image/jpg"],
+  mimeTypes: ["image/tiff", "image/png", "image/jpg"],
   editor: { images: { crop: false } },
   styles: {
     colors: {
@@ -64,8 +64,8 @@ export default function DreamPage() {
             filePath: image.filePath,
             options: {
               transformation: "preset",
-              transformationPreset: "thumbnail"
-            }
+              transformationPreset: "thumbnail",
+            },
           });
           setPhotoName(imageName);
           setOriginalPhoto(imageUrl);
