@@ -22,8 +22,8 @@ from skimage import io
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Using {device} device")
-print(torch.__version__)
+# print(f"Using {device} device")
+# print(torch.__version__)
 
 
 def parse_args(args=None):
@@ -153,7 +153,7 @@ class DS(torch.utils.data.Dataset): # set the input images in correct format to 
 
 def main():
     args = parse_args()
-    print(args)
+    # print(args)
 
     # torch.jit.enable_onednn_fusion(True)
 
@@ -214,7 +214,7 @@ def main():
                 torch.cuda.synchronize()
 
     # frontend needs to recieve the image from here
-
+    print(f"{out_dir}/{original_name}_agbm.tif",f"{original_name}_agbm.tif")
 
 if __name__ == "__main__":
     main()
