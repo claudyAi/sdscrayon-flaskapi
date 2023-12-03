@@ -39,4 +39,3 @@ next-env.d.ts
 .venv
 api/__pycache__
 assets
-*.pth
