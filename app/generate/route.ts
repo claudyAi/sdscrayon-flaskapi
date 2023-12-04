@@ -89,7 +89,18 @@ async function runPythonScriptTiff(filepath:string, filename:string, folder:stri
     return jsonTiffResponse    
 }
 
+async function createFile(file:string){
+  const fs = require('fs-extra');
+  const dir = `./${file}`;
+  fs.ensureDirSync(dir);
+}
+
 export async function POST(req: NextRequest) {
+  createFile('data');
+  createFile('preds');
+  createFile('public/data');
+  createFile('public/preds');
+  console.log('done creating folders');
   console.log("--------------------------");
   const data = await req.json();
   const fileName = data['image']['originalFile']['originalFileName'];
