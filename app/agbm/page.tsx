@@ -15,8 +15,6 @@ import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 
-
-
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -41,53 +39,6 @@ const options: UploadWidgetConfig = {
   },
 };
 
-// export default function AGBM() {
-//   console.log("start");    
-
-//   return (
-//     <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
-//       <Header />
-
-//       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 sm:mt-20 mt-20 background-gradient">
-//         <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
-//           Generate <span className="text-blue-600">AGBM predictions </span> from
-//           .tif
-//         </h1>
-//         <form action="/generate" method="post" encType="multipart/form-data">
-//           <input type="file" name="file" multiple />
-//           <button className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md">
-//             Upload
-//           </button>
-//         </form>
-//       </main>
-//     </div>
-//   );
-// }
-
-// import Image from 'next/image';
-// import fs from 'fs';
-// import { promisify } from 'util';
-
-// const Jimp = require('jimp');
-
-// async function convertTiffToJpeg(tiffFilePath: string, jpegFilePath: string) {
-//   try {
-//     const tiffImage = await Jimp.read(tiffFilePath);
-//     await tiffImage.quality(100).writeAsync(jpegFilePath); // Save as JPEG with specified quality (100 is maximum)
-
-//     console.log('Conversion successful');
-//   } catch (error) {
-//     console.error('Error converting TIFF to JPEG:', error);
-//   }
-// }
-
-// // Usage example
-// const tiffFilePath = 'd/S_k_2_2017_5.tif'; // Replace with your TIFF file path
-// const jpegFilePath = 'djpg/S_k_2_2017_5.jpg'; // Replace with the path to save the converted JPEG file
-
-// convertTiffToJpeg(tiffFilePath, jpegFilePath);
-
-
 export default function AGBM() {
   const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
   const [restoredImage, setRestoredImage] = useState<string | null>(null);
@@ -96,8 +47,7 @@ export default function AGBM() {
   const [sideBySide, setSideBySide] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
-  const [theme, setTheme] = useState("defaultTheme");
-  const [room, setRoom] = useState("defaultRoom");
+
 
   const UploadDropZone = () => (
     <UploadDropzone
@@ -137,7 +87,7 @@ export default function AGBM() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ imageUrl: fileUrl, theme, room, image}),
+      body: JSON.stringify({ imageUrl: fileUrl, image}),
     });
     console.log(res);
     let newPhoto = await res.json();

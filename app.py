@@ -38,20 +38,6 @@ def convert_tiff2jpg():
     print('filepath', filepath)
     print('filename', filename)
     print('folder', folder)
-    
-    # Run Python script
-    # import subprocess
-    # result = subprocess.run(['python', 'visualize_tiff.py'], capture_output=True, text=True)
-    # print("model done")
-    # print("result", result)
-    # # Check if the subprocess ran successfully
-    # output = result.stdout  # Get the output of the subprocess
-    # print('output', output)
-    # response_data = {
-    #     'message': 'Python script executed successfully',
-    #     'output': output
-    # }
-    # visualise_tiff(filepath=filepath, filename=filename)
     return jsonify(visualise_tiff(filepath, filename, folder))
 
 if __name__ == '__main__':
