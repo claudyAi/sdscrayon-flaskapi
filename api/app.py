@@ -55,5 +55,17 @@ def upload_image():
     return send_file()
 
 
+@app.route('/tiff2jpg', methods=['POST'])
+def convert_tiff2jpg():
+    print("receive tiff2jpg post")
+    filepath = request.json['filepath']
+    filename = request.json['filename']
+    folder = request.json['folder']
+    print('filepath', filepath)
+    print('filename', filename)
+    print('folder', folder)
+    return jsonify(visualise_tiff(filepath, filename, folder))
+
+
 if __name__ == '__main__':
     app.run(debug=True)

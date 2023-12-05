@@ -3,36 +3,48 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
+import { UrlBuilder } from "@bytescale/sdk";
+import { UploadWidgetConfig } from "@bytescale/upload-widget";
+import { UploadDropzone } from "@bytescale/upload-widget-react";
+import { CompareSlider } from "../../components/CompareSlider";
 import Header from "../../components/Header";
+import LoadingDots from "../../components/LoadingDots";
+import ResizablePanel from "../../components/ResizablePanel";
+import Toggle from "../../components/Toggle";
+import appendNewToName from "../../utils/appendNewToName";
+import downloadPhoto from "../../utils/downloadPhoto";
+
 import "react-tiff/dist/index.css";
 import { TIFFViewer } from "react-tiff";
-// import Tiff from "tiff.js";
-// import tiffFile from "./output.tif";
 
-// const options: UploadWidgetConfig = {
-//   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-//     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-//     : "free",
-//   maxFileCount: 1,
-//   mimeTypes: ["image/jpeg", "image/png", "image/jpg", "image/tiff"],
-//   editor: { images: { crop: false } },
-//   styles: {
-//     colors: {
-//       primary: "#2563EB", // Primary buttons & links
-//       error: "#d23f4d", // Error messages
-//       shade100: "#fff", // Standard text
-//       shade200: "#fffe", // Secondary button text
-//       shade300: "#fffd", // Secondary button text (hover)
-//       shade400: "#fffc", // Welcome text
-//       shade500: "#fff9", // Modal close button
-//       shade600: "#fff7", // Border
-//       shade700: "#fff2", // Progress indicator background
-//       shade800: "#fff1", // File item background
-//       shade900: "#ffff", // Various (draggable crop buttons, etc.)
-//     },
-//   },
-// };
+import Tiff from "tiff.js";
+import tiffFile from "./output.tif";
 
+const options: UploadWidgetConfig = {
+  apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+    ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+    : "free",
+  maxFileCount: 1,
+  mimeTypes: ["image/jpeg", "image/png", "image/jpg", "image/tiff"],
+  editor: { images: { crop: false } },
+  styles: {
+    colors: {
+      primary: "#2563EB", // Primary buttons & links
+      error: "#d23f4d", // Error messages
+      shade100: "#fff", // Standard text
+      shade200: "#fffe", // Secondary button text
+      shade300: "#fffd", // Secondary button text (hover)
+      shade400: "#fffc", // Welcome text
+      shade500: "#fff9", // Modal close button
+      shade600: "#fff7", // Border
+      shade700: "#fff2", // Progress indicator background
+      shade800: "#fff1", // File item background
+      shade900: "#ffff", // Various (draggable crop buttons, etc.)
+    },
+  },
+};
+
+// OLD CODE
 export default function AGBM() {
   console.log("start");
   // var xhr = new XMLHttpRequest();
@@ -124,7 +136,12 @@ export default function AGBM() {
             Upload
           </button>
         </form>
-
+        <Image
+          src="/S_k_67_2017_agbm.tif"
+          width={500}
+          height={500}
+          alt="Picture of agbm"
+        />
         {outputPath ? (
           <TIFFViewer
             tiff={outputPath}
@@ -139,6 +156,8 @@ export default function AGBM() {
     </div>
   );
 }
+
+// ///// NEW
 
 // export default function agbm() {
 //   const [originalPhoto, setOriginalPhoto] = useState<string | null>(null);
