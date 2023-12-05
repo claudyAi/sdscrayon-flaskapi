@@ -48,15 +48,14 @@ export default function AGBM() {
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
 
-
   const UploadDropZone = () => (
     <UploadDropzone
       options={options}
       onUpdate={({ uploadedFiles }) => {
         if (uploadedFiles.length !== 0) {
-          console.log("uploaded files",uploadedFiles);
+          console.log("uploaded files", uploadedFiles);
           const image = uploadedFiles[0];
-          console.log("image",image);
+          console.log("image", image);
           console.log("hi");
           const imageName: string = image.originalFile.originalFileName!;
           const imageUrl = UrlBuilder.url({
@@ -70,7 +69,7 @@ export default function AGBM() {
           console.log(imageUrl);
           setPhotoName(imageName);
           setOriginalPhoto(imageUrl);
-          generatePhoto(imageUrl,image);
+          generatePhoto(imageUrl, image);
         }
       }}
       width="670px"
@@ -79,7 +78,7 @@ export default function AGBM() {
   );
 
   async function generatePhoto(fileUrl: string, image: any) {
-    console.log("generate")
+    console.log("generate");
     await new Promise((resolve) => setTimeout(resolve, 200));
     setLoading(true);
     const res = await fetch("/generate", {
@@ -87,11 +86,11 @@ export default function AGBM() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ imageUrl: fileUrl, image}),
+      body: JSON.stringify({ imageUrl: fileUrl, image }),
     });
     console.log(res);
     let newPhoto = await res.json();
-    console.log('new photo', newPhoto);
+    console.log("new photo", newPhoto);
     if (res.status !== 200) {
       setError(newPhoto);
     } else {
@@ -161,7 +160,9 @@ export default function AGBM() {
                     />
                   </div>
                   <div className="sm:mt-0 mt-8">
-                    <h2 className="mb-1 font-medium text-lg">Predicted Image</h2>
+                    <h2 className="mb-1 font-medium text-lg">
+                      Predicted Image
+                    </h2>
                     <a href={restoredImage} target="_blank" rel="noreferrer">
                       <Image
                         alt="restored photo"
@@ -182,6 +183,7 @@ export default function AGBM() {
                 >
                   <span className="pt-4">
                     <LoadingDots color="white" style="large" />
+                    <div>Loading Upload</div>
                   </span>
                 </button>
               )}
