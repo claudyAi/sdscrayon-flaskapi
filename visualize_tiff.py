@@ -43,5 +43,5 @@ def visualise_tiff(filepath, filename, folder):
     gdal_array.SaveArray(scaled_arr, f'public/{folder}/output.jpg', format='JPEG')
     
     print(f'public/{folder}/{filename}')
-    return f'/{folder}/{filename}'
-    # return f'/{folder}/output.jpg'
+    # return f'/{folder}/{filename}'
+    return f'/{folder}/output.jpg'

@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
 import { UrlBuilder } from "@bytescale/sdk";
 import { UploadWidgetConfig } from "@bytescale/upload-widget";
 import { UploadDropzone } from "@bytescale/upload-widget-react";
@@ -14,6 +13,7 @@ import ResizablePanel from "../../components/ResizablePanel";
 import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
+import React, { useState, useEffect } from "react";
 
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -47,6 +47,8 @@ export default function AGBM() {
   const [sideBySide, setSideBySide] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
+  const [showSecondLoading, setShowSecondLoading] = useState(false);
+  const [showThirdLoading, setShowThirdLoading] = useState(false);
 
   const UploadDropZone = () => (
     <UploadDropzone
@@ -76,6 +78,29 @@ export default function AGBM() {
       height="250px"
     />
   );
+
+  useEffect(() => {
+    let secondTimer;
+    let thirdTimer;
+
+    if (loading) {
+      // Set the second loading to appear after 0.5 seconds
+      secondTimer = setTimeout(() => {
+        setShowSecondLoading(true);
+        // Set the third loading to appear after another 0.5 seconds (1 second in total from the start)
+        thirdTimer = setTimeout(() => {
+          setShowThirdLoading(true);
+        }, 2000);
+      }, 4000);
+    }
+
+    return () => {
+      clearTimeout(secondTimer);
+      clearTimeout(thirdTimer);
+      setShowSecondLoading(false); // Reset the second loading state
+      setShowThirdLoading(false); // Reset the third loading state
+    };
+  }, [loading]);
 
   async function generatePhoto(fileUrl: string, image: any) {
     console.log("generate");
@@ -178,16 +203,66 @@ export default function AGBM() {
                 </div>
               )}
               {loading && (
-                <button
-                  disabled
-                  className="bg-blue-500 rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 w-40"
-                >
-                  <span className="pt-4">
-                    <LoadingDots color="white" style="large" />
-                    <div>Loading Upload</div>
-                  </span>
-                </button>
+                <span className="pt-4">
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      <Image
+                        src="/number-1-white.svg"
+                        width={30}
+                        height={30}
+                        alt="1 icon"
+                      />
+                      <p className="text-left font-medium">
+                        Sending upload to model
+                      </p>
+                    </div>
+                    <span className="pt-4">
+                      <LoadingDots color="white" style="large" />
+                    </span>
+                  </div>
+                </span>
               )}
+              {loading && showSecondLoading && (
+                <span className="pt-4">
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      <Image
+                        src="/number-2-white.svg"
+                        width={30}
+                        height={30}
+                        alt="2 icon"
+                      />
+                      <p className="text-left font-medium">
+                        Model Processing Image
+                      </p>
+                    </div>
+                    <span className="pt-4">
+                      <LoadingDots color="white" style="large" />
+                    </span>
+                  </div>
+                </span>
+              )}
+              {loading && showThirdLoading && (
+                <span className="pt-4">
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      <Image
+                        src="/number-3-white.svg"
+                        width={30}
+                        height={30}
+                        alt="1 icon"
+                      />
+                      <p className="text-left font-medium">
+                        Estimated biomass output image
+                      </p>
+                    </div>
+                    <span className="pt-4">
+                      <LoadingDots color="white" style="large" />
+                    </span>
+                  </div>
+                </span>
+              )}
+
               {error && (
                 <div
                   className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mt-8"
