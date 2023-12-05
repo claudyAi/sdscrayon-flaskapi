@@ -21,7 +21,7 @@ from skimage import io
 
 
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu"
 # print(f"Using {device} device")
 # print(torch.__version__)
 
@@ -161,7 +161,7 @@ def main():
 
     model = torch.load("./modelo_best.pth", map_location="cpu")
     model = model.eval()
-    model = model.cuda()
+    # model = model.cuda()
     model = model.to(memory_format=torch.channels_last)
     models = [model]
 
@@ -198,8 +198,8 @@ def main():
     with torch.no_grad():
         with tqdm.tqdm(test_loader, leave=False, mininterval=2) as pbar:
             for images, mask, target in pbar:
-                images = images.cuda(non_blocking=True)
-                mask = mask.cuda(non_blocking=True)
+                # images = images.cuda(non_blocking=True)
+                # mask = mask.cuda(non_blocking=True)
                 logits = predict_tta(models, images, mask, ntta=args.tta)
 
                 logits = logits.squeeze(1).cpu().numpy()
@@ -211,7 +211,7 @@ def main():
                     im = Image.fromarray(pred)
                     im.save(out_dir / f"{original_name}_agbm.tif", format="TIFF", save_all=True)
 
-                torch.cuda.synchronize()
+                # torch.cuda.synchronize()
 
     # frontend needs to recieve the image from here
     print(f"{out_dir}/{original_name}_agbm.tif",f"{original_name}_agbm.tif")

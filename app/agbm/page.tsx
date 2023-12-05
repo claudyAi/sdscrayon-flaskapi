@@ -147,6 +147,7 @@ export default function AGBM() {
                   height={475}
                 />
               )}
+
               {restoredImage && originalPhoto && !sideBySide && (
                 <div className="flex sm:space-x-4 sm:flex-row flex-col">
                   <div>

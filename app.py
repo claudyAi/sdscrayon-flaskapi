@@ -32,6 +32,7 @@ def upload_image():
 @app.route('/tiff2jpg', methods=['POST'])
 def convert_tiff2jpg():
     print("receive tiff2jpg post")
+    print(request.json)
     filepath = request.json['filepath'] 
     filename = request.json['filename']
     folder = request.json['folder']
