@@ -136,12 +136,12 @@ export default function AGBM() {
             Upload
           </button>
         </form>
-        <Image
+        {/* <Image
           src="/S_k_67_2017_agbm.tif"
           width={500}
           height={500}
           alt="Picture of agbm"
-        />
+        /> */}
         {outputPath ? (
           <TIFFViewer
             tiff={outputPath}
