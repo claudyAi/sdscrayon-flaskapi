@@ -19,8 +19,9 @@ const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
     : "free",
-  maxFileCount: 1,
-  mimeTypes: ["image/jpeg", "image/png", "image/jpg", "image/tiff"],
+  // maxFileCount: 1,
+  mimeTypes: ["image/jpeg", "image/png", "image/jpg", "image/tiff", "image/shp", "application/octet-stream", "application/x-esri-shape",
+  "application/vnd.esri.shapefile"],
   editor: { images: { crop: false } },
   styles: {
     colors: {
@@ -47,48 +48,46 @@ export default function AGBM() {
   const [sideBySide, setSideBySide] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
+  const [fileInput, setFileInput] = useState<any>();
 
-  const UploadDropZone = () => (
-    <UploadDropzone
-      options={options}
-      onUpdate={({ uploadedFiles }) => {
-        if (uploadedFiles.length !== 0) {
-          console.log("uploaded files", uploadedFiles);
-          const image = uploadedFiles[0];
-          console.log("image", image);
-          console.log("hi");
-          const imageName: string = image.originalFile.originalFileName!;
-          const imageUrl = UrlBuilder.url({
-            accountId: image.accountId,
-            filePath: image.filePath,
-            options: {
-              transformation: "preset",
-              transformationPreset: "thumbnail",
-            },
-          });
-          console.log(imageUrl);
-          setPhotoName(imageName);
-          setOriginalPhoto(imageUrl);
-          generatePhoto(imageUrl, image);
-        }
-      }}
-      width="670px"
-      height="250px"
-    />
-  );
+  // const UploadDropZone = () => (
+  //   <UploadDropzone
+  //     options={options}
+  //     onUpdate={({ uploadedFiles }) => {
+  //       if (uploadedFiles.length !== 0) {
+  //         console.log("uploaded files",uploadedFiles);
+  //         const image = uploadedFiles[0];
+  //         console.log("image",image);
+  //         console.log("hi");
+  //         const imageName: string = image.originalFile.originalFileName!;
+  //         const imageUrl = UrlBuilder.url({
+  //           accountId: image.accountId,
+  //           filePath: image.filePath,
+  //           options: {
+  //             transformation: "preset",
+  //             transformationPreset: "thumbnail",
+  //           },
+  //         });
+  //         console.log(imageUrl);
+  //         setPhotoName(imageName);
+  //         setOriginalPhoto(imageUrl);
+  //         generatePhoto(imageUrl,image);
+  //       }
+  //     }}
+  //     width="670px"
+  //     height="250px"
+  //   />
+  // );
 
-  async function generatePhoto(fileUrl: string, image: any) {
-    console.log("generate");
+  async function generatePhoto(image: any) {
+    console.log("generate")
+    console.log(image)
     await new Promise((resolve) => setTimeout(resolve, 200));
     setLoading(true);
     const res = await fetch("/generate", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ imageUrl: fileUrl, image }),
+      body: image,
     });
-    console.log(res);
     let newPhoto = await res.json();
     console.log("new photo", newPhoto);
     if (res.status !== 200) {
@@ -102,6 +101,23 @@ export default function AGBM() {
     }, 1300);
     console.log(newPhoto["restoredImage"]);
     console.log(newPhoto["originalPhoto"]);
+    console.log(newPhoto["loadingResponse"]);
+  }
+
+  const submitHandler = (event:any) => {
+    // handle validations
+    event.preventDefault();
+    console.log('event', event.target);
+    const data = new FormData(event.target);
+    const uploadedFiles = data.getAll("imageInput")
+    const indvFiles = new FormData();
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      console.log("indv files",uploadedFiles[i]);
+      indvFiles.append("files", uploadedFiles[i])
+    }
+    console.log("indvFiles",indvFiles);
+    generatePhoto(indvFiles);
+    setPhotoName('predicted'); // hardcode downloaded name for now
   }
 
   return (
@@ -137,7 +153,20 @@ export default function AGBM() {
                   restored={restoredImage!}
                 />
               )}
-              {!originalPhoto && <UploadDropZone />}
+              {!originalPhoto && 
+              <div>
+                <form onSubmit={submitHandler} method="post" encType="multipart/form-data">
+                  <input
+                    type="file"
+                    name="imageInput"
+                    multiple
+                    onChange={(event) => setFileInput(event.target.files)}
+                    />
+                    <button type="submit" className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md">
+                      Upload
+                    </button>
+                  </form>
+                </div>}
               {originalPhoto && !restoredImage && (
                 <Image
                   alt="original photo"
@@ -177,6 +206,7 @@ export default function AGBM() {
                 </div>
               )}
               {loading && (
+              <div className="flex justify-between items-center w-full flex-col mt-4">
                 <button
                   disabled
                   className="bg-blue-500 rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 w-40"
@@ -186,6 +216,7 @@ export default function AGBM() {
                     <div>Loading Upload</div>
                   </span>
                 </button>
+                </div>
               )}
               {error && (
                 <div
