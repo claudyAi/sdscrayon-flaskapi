@@ -26,47 +26,47 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 # print(torch.__version__)
 
 
-def parse_args(args=None):
-    parser = argparse.ArgumentParser()
+# def parse_args(args=None):
+#     parser = argparse.ArgumentParser()
 
-    # change this to the frontend dir
-    parser.add_argument( #THIS IS WHERE THE INPUT IMAGES COME FROM
-        "--test-images-dir",
-        type=str,
-        help="path to test dir",
-        default="./data", # change this to the local dir where the input is saved
-    )
-    # parser.add_argument( #THIS IS WHERE MODEL PTH FILE IS STORED 
-    #     "--model-path",
-    #     type=str,
-    #     help="path models",
-    #     required=False,
-    #     default= './tf_efficientnetv2_l_in21k_f0_b8x1_e100_nrmse_devscse_attnlin_augs_decplus7_plus800eb_200ft/modelo_best.pth' , 
-    # ) # change this to the local dir where the model pth is saved
-    parser.add_argument( #THIS IS WHERE THE OUTPUT IMAGES GO
-        "--out-dir",
-        type=str,
-        help="output directory",
-        required=False,
-        default= './preds' ,
-    ) # change this to the local dir u want the output to go
+#     # change this to the frontend dir
+#     parser.add_argument( #THIS IS WHERE THE INPUT IMAGES COME FROM
+#         "--test-images-dir",
+#         type=str,
+#         help="path to test dir",
+#         default="./data", # change this to the local dir where the input is saved
+#     )
+#     # parser.add_argument( #THIS IS WHERE MODEL PTH FILE IS STORED 
+#     #     "--model-path",
+#     #     type=str,
+#     #     help="path models",
+#     #     required=False,
+#     #     default= './tf_efficientnetv2_l_in21k_f0_b8x1_e100_nrmse_devscse_attnlin_augs_decplus7_plus800eb_200ft/modelo_best.pth' , 
+#     # ) # change this to the local dir where the model pth is saved
+#     parser.add_argument( #THIS IS WHERE THE OUTPUT IMAGES GO
+#         "--out-dir",
+#         type=str,
+#         help="output directory",
+#         required=False,
+#         default= './preds' ,
+#     ) # change this to the local dir u want the output to go
 
-    parser.add_argument(
-        "--num-workers", type=int, help="number of data loader workers", default=8,
-    )
-    parser.add_argument("--batch-size", type=int, help="batch size", default=8)
+#     parser.add_argument(
+#         "--num-workers", type=int, help="number of data loader workers", default=8,
+#     )
+#     parser.add_argument("--batch-size", type=int, help="batch size", default=8)
 
-    parser.add_argument(
-        "--tta",
-        type=int,
-        help="tta",
-        default=1,
-    )
-    parser.add_argument("--img-size", type=int, nargs=2, default=IMG_SIZE)
+#     parser.add_argument(
+#         "--tta",
+#         type=int,
+#         help="tta",
+#         default=1,
+#     )
+#     parser.add_argument("--img-size", type=int, nargs=2, default=IMG_SIZE)
 
-    args = parser.parse_args(args=args)
+#     args = parser.parse_args(args=args)
 
-    return args
+#     return args
 
 s2_max = np.array(
     [255., 255., 255., 255., 255., 255., 255., 255., 255., 255., 255.],
@@ -152,23 +152,28 @@ class DS(torch.utils.data.Dataset): # set the input images in correct format to 
         return imgs, mask, file_name
 
 def main():
-    args = parse_args()
+    # args = parse_args()
     # print(args)
-
+    print('loading parameters')
+    test_images_dir = "./data"
+    num_workers = 8
+    batch_size = 8
+    tta = 1
+    out_dir = './preds'
     # torch.jit.enable_onednn_fusion(True)
 
     # loads model from a pth file from the location specified in args.model_path
-
+    print('loading model')
     model = torch.load("./modelo_best.pth", map_location="cpu")
     model = model.eval()
     model = model.cuda()
     model = model.to(memory_format=torch.channels_last)
     models = [model]
 
-
+    
     # loads all the images from location specified in args.test_images_dir
-
-    test_images_dir = Path(args.test_images_dir)
+    print('loading images')
+    test_images_dir = Path(test_images_dir)
     all_files = [f for f in test_images_dir.iterdir() if f.is_file()]
     test_dataset = DS(
         file_paths=all_files,  # Pass the list of file paths
@@ -176,31 +181,31 @@ def main():
     )
     test_sampler = None
 
-    args.num_workers = min(args.batch_size, 4)
+    num_workers = min(batch_size, 4)
     test_loader = torch.utils.data.DataLoader(
         test_dataset,
-        batch_size=args.batch_size,
+        batch_size=batch_size,
         shuffle=False,
         sampler=test_sampler,
         collate_fn=None,
-        num_workers=args.num_workers,
+        num_workers=num_workers,
         pin_memory=False,
         persistent_workers=True,
         drop_last=False,
     )
 
-    out_dir = Path(args.out_dir)
+    out_dir = Path(out_dir)
     out_dir.mkdir(exist_ok=True, parents=True)
 
 
     # does the predictions and saves it in the folder specified in args.out_dir
-
+    print('does predictions and save in folder')
     with torch.no_grad():
         with tqdm.tqdm(test_loader, leave=False, mininterval=2) as pbar:
             for images, mask, target in pbar:
                 images = images.cuda(non_blocking=True)
                 mask = mask.cuda(non_blocking=True)
-                logits = predict_tta(models, images, mask, ntta=args.tta)
+                logits = predict_tta(models, images, mask, ntta=tta)
 
                 logits = logits.squeeze(1).cpu().numpy()
 
@@ -214,7 +219,7 @@ def main():
                 torch.cuda.synchronize()
 
     # frontend needs to recieve the image from here
-    print(f"{out_dir}/{original_name}_agbm.tif",f"{original_name}_agbm.tif")
+    return ({'filepath':f"{out_dir}/{original_name}_agbm.tif",'filename':f"{original_name}_agbm.tif"})
 
 if __name__ == "__main__":
     main()
