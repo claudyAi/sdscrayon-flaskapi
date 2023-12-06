@@ -80,8 +80,8 @@ export default function AGBM() {
   );
 
   useEffect(() => {
-    let secondTimer;
-    let thirdTimer;
+    let secondTimer: string | number | NodeJS.Timeout | undefined;
+    let thirdTimer: string | number | NodeJS.Timeout | undefined;
 
     if (loading) {
       // Set the second loading to appear after 0.5 seconds
@@ -91,7 +91,7 @@ export default function AGBM() {
         thirdTimer = setTimeout(() => {
           setShowThirdLoading(true);
         }, 2000);
-      }, 4000);
+      }, 2000);
     }
 
     return () => {
@@ -139,7 +139,7 @@ export default function AGBM() {
         </h1>
         <ResizablePanel>
           <AnimatePresence mode="wait">
-            <motion.div className="flex justify-between items-center w-full flex-col mt-4">
+            <motion.div className="flex justify-center items-center w-full flex-col ">
               {!restoredImage && (
                 <>
                   <div className="mt-4 w-full max-w-sm"></div>
@@ -163,7 +163,7 @@ export default function AGBM() {
                 />
               )}
               {!originalPhoto && <UploadDropZone />}
-              {originalPhoto && !restoredImage && (
+              {/* {originalPhoto && !restoredImage && (
                 <Image
                   alt="original photo"
                   src={originalPhoto}
@@ -171,7 +171,7 @@ export default function AGBM() {
                   width={475}
                   height={475}
                 />
-              )}
+              )} */}
 
               {restoredImage && originalPhoto && !sideBySide && (
                 <div className="flex sm:space-x-4 sm:flex-row flex-col">
@@ -202,6 +202,7 @@ export default function AGBM() {
                   </div>
                 </div>
               )}
+
               {loading && (
                 <span className="pt-4">
                   <div className="space-y-4 w-full max-w-sm">
