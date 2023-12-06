@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
 import { UrlBuilder } from "@bytescale/sdk";
 import { UploadWidgetConfig } from "@bytescale/upload-widget";
 import { UploadDropzone } from "@bytescale/upload-widget-react";
@@ -14,14 +13,23 @@ import ResizablePanel from "../../components/ResizablePanel";
 import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
+import React, { useState, useEffect } from "react";
 
 const options: UploadWidgetConfig = {
   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
     : "free",
   // maxFileCount: 1,
-  mimeTypes: ["image/jpeg", "image/png", "image/jpg", "image/tiff", "image/shp", "application/octet-stream", "application/x-esri-shape",
-  "application/vnd.esri.shapefile"],
+  mimeTypes: [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "image/tiff",
+    "image/shp",
+    "application/octet-stream",
+    "application/x-esri-shape",
+    "application/vnd.esri.shapefile",
+  ],
   editor: { images: { crop: false } },
   styles: {
     colors: {
@@ -49,6 +57,8 @@ export default function AGBM() {
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
   const [fileInput, setFileInput] = useState<any>();
+  const [showSecondLoading, setShowSecondLoading] = useState(false);
+  const [showThirdLoading, setShowThirdLoading] = useState(false);
 
   // const UploadDropZone = () => (
   //   <UploadDropzone
@@ -80,8 +90,8 @@ export default function AGBM() {
   // );
 
   async function generatePhoto(image: any) {
-    console.log("generate")
-    console.log(image)
+    console.log("generate");
+    console.log(image);
     await new Promise((resolve) => setTimeout(resolve, 200));
     setLoading(true);
     const res = await fetch("/generate", {
@@ -104,21 +114,43 @@ export default function AGBM() {
     console.log(newPhoto["loadingResponse"]);
   }
 
-  const submitHandler = (event:any) => {
+  const submitHandler = (event: any) => {
     // handle validations
     event.preventDefault();
-    console.log('event', event.target);
+    console.log("event", event.target);
     const data = new FormData(event.target);
-    const uploadedFiles = data.getAll("imageInput")
+    const uploadedFiles = data.getAll("imageInput");
     const indvFiles = new FormData();
     for (let i = 0; i < uploadedFiles.length; i++) {
-      console.log("indv files",uploadedFiles[i]);
-      indvFiles.append("files", uploadedFiles[i])
+      console.log("indv files", uploadedFiles[i]);
+      indvFiles.append("files", uploadedFiles[i]);
     }
-    console.log("indvFiles",indvFiles);
+    console.log("indvFiles", indvFiles);
     generatePhoto(indvFiles);
-    setPhotoName('predicted'); // hardcode downloaded name for now
-  }
+    setPhotoName("predicted"); // hardcode downloaded name for now
+  };
+  useEffect(() => {
+    let secondTimer: string | number | NodeJS.Timeout | undefined;
+    let thirdTimer: string | number | NodeJS.Timeout | undefined;
+
+    if (loading) {
+      // Set the second loading to appear after 0.5 seconds
+      secondTimer = setTimeout(() => {
+        setShowSecondLoading(true);
+        // Set the third loading to appear after another 0.5 seconds (1 second in total from the start)
+        thirdTimer = setTimeout(() => {
+          setShowThirdLoading(true);
+        }, 2000);
+      }, 2000);
+    }
+
+    return () => {
+      clearTimeout(secondTimer);
+      clearTimeout(thirdTimer);
+      setShowSecondLoading(false); // Reset the second loading state
+      setShowThirdLoading(false); // Reset the third loading state
+    };
+  }, [loading]);
 
   return (
     <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
@@ -153,21 +185,29 @@ export default function AGBM() {
                   restored={restoredImage!}
                 />
               )}
-              {!originalPhoto && 
-              <div>
-                <form onSubmit={submitHandler} method="post" encType="multipart/form-data">
-                  <input
-                    type="file"
-                    name="imageInput"
-                    multiple
-                    onChange={(event) => setFileInput(event.target.files)}
+              {!originalPhoto && (
+                <div>
+                  <form
+                    onSubmit={submitHandler}
+                    method="post"
+                    encType="multipart/form-data"
+                  >
+                    <input
+                      type="file"
+                      name="imageInput"
+                      multiple
+                      onChange={(event) => setFileInput(event.target.files)}
                     />
-                    <button type="submit" className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md">
+                    <button
+                      type="submit"
+                      className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md"
+                    >
                       Upload
                     </button>
                   </form>
-                </div>}
-              {originalPhoto && !restoredImage && (
+                </div>
+              )}
+              {/* {originalPhoto && !restoredImage && (
                 <Image
                   alt="original photo"
                   src={originalPhoto}
@@ -175,7 +215,7 @@ export default function AGBM() {
                   width={475}
                   height={475}
                 />
-              )}
+              )} */}
               {restoredImage && originalPhoto && !sideBySide && (
                 <div className="flex sm:space-x-4 sm:flex-row flex-col">
                   <div>
@@ -206,17 +246,64 @@ export default function AGBM() {
                 </div>
               )}
               {loading && (
-              <div className="flex justify-between items-center w-full flex-col mt-4">
-                <button
-                  disabled
-                  className="bg-blue-500 rounded-full text-white font-medium px-4 pt-2 pb-3 mt-8 w-40"
-                >
-                  <span className="pt-4">
-                    <LoadingDots color="white" style="large" />
-                    <div>Loading Upload</div>
-                  </span>
-                </button>
-                </div>
+                <span className="pt-4">
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      <Image
+                        src="/number-1-white.svg"
+                        width={30}
+                        height={30}
+                        alt="1 icon"
+                      />
+                      <p className="text-left font-medium">
+                        Sending upload to model
+                      </p>
+                    </div>
+                    <span className="pt-4">
+                      <LoadingDots color="white" style="large" />
+                    </span>
+                  </div>
+                </span>
+              )}
+              {loading && showSecondLoading && (
+                <span className="pt-4">
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      <Image
+                        src="/number-2-white.svg"
+                        width={30}
+                        height={30}
+                        alt="2 icon"
+                      />
+                      <p className="text-left font-medium">
+                        Model Processing Image
+                      </p>
+                    </div>
+                    <span className="pt-4">
+                      <LoadingDots color="white" style="large" />
+                    </span>
+                  </div>
+                </span>
+              )}
+              {loading && showThirdLoading && (
+                <span className="pt-4">
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      <Image
+                        src="/number-3-white.svg"
+                        width={30}
+                        height={30}
+                        alt="1 icon"
+                      />
+                      <p className="text-left font-medium">
+                        Estimated biomass output image
+                      </p>
+                    </div>
+                    <span className="pt-4">
+                      <LoadingDots color="white" style="large" />
+                    </span>
+                  </div>
+                </span>
               )}
               {error && (
                 <div
