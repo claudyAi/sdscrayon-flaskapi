@@ -51,13 +51,13 @@ def upload_image():
 @app.route('/tiff2jpg', methods=['POST'])
 def convert_tiff2jpg():
     print("receive tiff2jpg post")
-    filepath = request.json['filepath'] 
-    filename = request.json['filename']
+    # filepath = request.json['filepath'] 
+    # filename = request.json['filename']
     folder = request.json['folder']
-    print('filepath', filepath)
-    print('filename', filename)
+    # print('filepath', filepath)
+    # print('filename', filename)
     print('folder', folder)
-    return jsonify(visualise_tiff(filepath, filename, folder))
+    return visualise_tiff(folder)
 
 # Run Python Script to convert SHP to TIFF image 
 @app.route('/shp2tiff', methods=['POST'])
