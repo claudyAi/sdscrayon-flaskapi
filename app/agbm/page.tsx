@@ -13,6 +13,17 @@ import downloadPhoto from "../../utils/downloadPhoto";
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.css'
 
+const data = [
+  ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1'],
+  ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'],
+  ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3'],
+  ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4'],
+  ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5'],
+  ['A6', 'B6', 'C6', 'D6', 'E6', 'F6', 'G6', 'H6'],
+  ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7'],
+  ['A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8'],
+];
+
 // const options: UploadWidgetConfig = {
 //   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
 //     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
@@ -59,6 +70,15 @@ export default function AGBM() {
   const [showThirdLoading, setShowThirdLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const isSingleImage = originalPhoto && originalPhoto.length === 1;
+
+  const [isShown, setIsShown] = useState(false);
+
+  const handleMouseOver = () => {
+    setIsShown(true);
+  }
+  const handleMouseOut = () => {
+    setIsShown(false);
+  }
 
   async function generatePhoto(image: any) {
     console.log("generate");
@@ -294,14 +314,27 @@ return (
                           Predicted Image
                         </h2>
                         <a href={restoredImage[index]} target="_blank" rel="noreferrer">
-                          <Image
-                            alt="restored photo"
-                            src={restoredImage[index]}
-                            className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
-                            width={475}
-                            height={475}
-                            onLoadingComplete={() => setRestoredLoaded(true)}
-                          />
+                          <div style={{position: 'relative'}}>
+                            <Image
+                              alt="restored photo"
+                              src={restoredImage[index]}
+                              className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
+                              width={475}
+                              height={475}
+                              onLoadingComplete={() => setRestoredLoaded(true)}
+                            />
+                            <div className="grid-container" style={{display: 'grid', position: 'absolute', top: '46px', right: '101px'}}>
+                              {data.map((row, rowIndex) => (
+                                <div key={rowIndex} className="grid-row" style={{display: 'flex'}}>
+                                  {row.map((cell, colIndex) => (
+                                    <div key={colIndex} className="grid-cell" style={{height: '37px', width: '37px'}} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
+                                        {isShown && <div style={{border: '1px solid #ddd', height: '37px', width: '37px',}}>{cell}</div>}
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </a>
                       </div>
                     </div>)}
