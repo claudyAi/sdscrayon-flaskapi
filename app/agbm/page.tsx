@@ -24,39 +24,6 @@ const data = [
   ['A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8'],
 ];
 
-// const options: UploadWidgetConfig = {
-//   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-//     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-//     : "free",
-//   // maxFileCount: 1,
-//   mimeTypes: [
-//     "image/jpeg",
-//     "image/png",
-//     "image/jpg",
-//     "image/tiff",
-//     "image/shp",
-//     "application/octet-stream",
-//     "application/x-esri-shape",
-//     "application/vnd.esri.shapefile",
-//   ],
-//   editor: { images: { crop: false } },
-//   styles: {
-//     colors: {
-//       primary: "#2563EB", // Primary buttons & links
-//       error: "#d23f4d", // Error messages
-//       shade100: "#fff", // Standard text
-//       shade200: "#fffe", // Secondary button text
-//       shade300: "#fffd", // Secondary button text (hover)
-//       shade400: "#fffc", // Welcome text
-//       shade500: "#fff9", // Modal close button
-//       shade600: "#fff7", // Border
-//       shade700: "#fff2", // Progress indicator background
-//       shade800: "#fff1", // File item background
-//       shade900: "#ffff", // Various (draggable crop buttons, etc.)
-//     },
-//   },
-// };
-
 export default function AGBM() {
   const [originalPhoto, setOriginalPhoto] = useState<string[] | null>(null);
   const [restoredImage, setRestoredImage] = useState<string[] | null>(null);
@@ -70,7 +37,6 @@ export default function AGBM() {
   const [showThirdLoading, setShowThirdLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const isSingleImage = originalPhoto && originalPhoto.length === 1;
-
   const [isShown, setIsShown] = useState(false);
   const [dataArr, setDataArr] = useState(data);
 
@@ -367,8 +333,7 @@ return (
                   onClick={() => {
                     downloadPhoto(
                       restoredImage[index]!,
-                      appendNewToName(restoredImage[index]!)
-                    );
+                      appendNewToName(restoredImage[index]!));
                   }}
                   className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
                 >

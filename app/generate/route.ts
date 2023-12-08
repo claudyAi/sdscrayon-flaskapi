@@ -50,16 +50,38 @@ async function createFolder(file:string){
   }
 }
 
-export async function POST(req: NextRequest) {
-  // Create folder if it does not exist
-  createFolder('data');
-  createFolder('preds');
-  createFolder('public/data');
-  createFolder('public/preds');
-  createFolder('public/shp2tif');
-  console.log('done creating folders');
-  console.log("--------------------------");
+async function deleteFolder(dir_path:string){
+const fs = require('node:fs');
+if (fs.existsSync(dir_path)) {
+  fs.readdirSync(dir_path).forEach(function(entry:any) {
+      var entry_path = path.join(dir_path, entry);
+      if (fs.lstatSync(entry_path).isDirectory()) {
+        deleteFolder(entry_path);
+      } else {
+          fs.unlinkSync(entry_path);
+      }
+  });
+  fs.rmdirSync(dir_path);
+}}
 
+const foldersToDeleteAndCreate = [
+  'data',
+  'preds',
+  'public/data',
+  'public/preds',
+  'public/shp2tif',
+];
+const deleteAndCreateFolders = async () => {
+  for (const folder of foldersToDeleteAndCreate) {
+    await deleteFolder(folder);
+    await createFolder(folder);
+  }
+  console.log('Done deleting and creating folders');
+  console.log('--------------------------');
+};
+
+export async function POST(req: NextRequest) {
+  deleteAndCreateFolders();
   console.log('reach generate')
   const formData = await req.formData();
   console.log(formData);
