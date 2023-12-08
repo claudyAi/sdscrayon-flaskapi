@@ -13,6 +13,38 @@ import downloadPhoto from "../../utils/downloadPhoto";
 import React, { useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.css'
 
+// const options: UploadWidgetConfig = {
+//   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+//     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+//     : "free",
+//   // maxFileCount: 1,
+//   mimeTypes: [
+//     "image/jpeg",
+//     "image/png",
+//     "image/jpg",
+//     "image/tiff",
+//     "image/shp",
+//     "application/octet-stream",
+//     "application/x-esri-shape",
+//     "application/vnd.esri.shapefile",
+//   ],
+//   editor: { images: { crop: false } },
+//   styles: {
+//     colors: {
+//       primary: "#2563EB", // Primary buttons & links
+//       error: "#d23f4d", // Error messages
+//       shade100: "#fff", // Standard text
+//       shade200: "#fffe", // Secondary button text
+//       shade300: "#fffd", // Secondary button text (hover)
+//       shade400: "#fffc", // Welcome text
+//       shade500: "#fff9", // Modal close button
+//       shade600: "#fff7", // Border
+//       shade700: "#fff2", // Progress indicator background
+//       shade800: "#fff1", // File item background
+//       shade900: "#ffff", // Various (draggable crop buttons, etc.)
+//     },
+//   },
+// };
 
 export default function AGBM() {
   const [originalPhoto, setOriginalPhoto] = useState<string[] | null>(null);
@@ -44,12 +76,8 @@ export default function AGBM() {
     setTimeout(() => {
       setLoading(false);
     }, 1300);
-
-    const var1 = newPhoto['restoredImage'] as []
-    const var2 = newPhoto['originalPhoto'] as []
-    // console.log('newPhotooriginalPhoto at agbm', var1);
-    setRestoredImage(var1);
-    setOriginalPhoto(var2);
+    setRestoredImage(newPhoto['restoredImage']);
+    setOriginalPhoto(newPhoto['originalPhoto']);
     console.log('restoredImage at agbm', restoredImage);
     console.log('originalPhoto at agbm', originalPhoto);
   }
@@ -66,9 +94,15 @@ export default function AGBM() {
       console.log("indv files",  indvFile.name);
       indvFiles.append("files", uploadedFiles[i]);
       console.log(uploadedFiles[i]);
+      console.log('uploadedFiles.length', uploadedFiles.length);
     }
     console.log("indvFiles",indvFiles);
     generatePhoto(indvFiles);
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const indvFile : File = uploadedFiles[i] as File
+      if (indvFile.type != 'image/tiff') {
+        uploadedFiles.length = 1;}
+    }
     handlePrev(uploadedFiles.length);
     handleNext(uploadedFiles.length);
     setPhotoName('predicted'); // hardcode downloaded name for now
@@ -330,7 +364,9 @@ return (
               <span className="carousel-control-next-icon" aria-hidden="true"></span>
               <span className="visually-hidden">Next</span>
             </button>
-            </div>)}
+            </div>)
+            
+            }
             
             </motion.div>
           </AnimatePresence>
