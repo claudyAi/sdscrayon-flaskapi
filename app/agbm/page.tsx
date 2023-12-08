@@ -126,17 +126,16 @@ export default function AGBM() {
     }
     handlePrev(uploadedFiles.length);
     handleNext(uploadedFiles.length);
-    setPhotoName('predicted'); // hardcode downloaded name for now
   };
 
   const handlePrev = (uploadedFilesLength:any) => {
-    const newIndex = (activeIndex - 1 + uploadedFilesLength) % uploadedFilesLength;
+    const newIndex = (activeIndex + uploadedFilesLength) % uploadedFilesLength;
     setActiveIndex(newIndex);
     console.log('activeIndex',activeIndex);
   };
   
   const handleNext = (uploadedFilesLength:any) => {
-    const newIndex = (activeIndex + 1) % uploadedFilesLength;
+    const newIndex = (activeIndex) % uploadedFilesLength;
     setActiveIndex(newIndex);
     console.log('newIndex',newIndex);
   };
@@ -170,8 +169,7 @@ return (
     <Header />
     <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8">
       <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
-        Generate <span className="text-blue-600">AGBM predictions </span> from
-        .tif 
+        Generate <span className="text-blue-600">AGBM predictions </span> 
       </h1>
       <ResizablePanel>
         <AnimatePresence mode="wait">
@@ -278,11 +276,12 @@ return (
                     className={`carousel-item ${index === activeIndex ? 'active' : ''}`}
                   >
               {/* Content for each carousel item */}
-              <div className="flex justify-between items-center w-full flex-col mt-4">
-              {!restoredImage && (
-                <>
-                  <div className="mt-4 w-full max-w-sm"></div>
-                </>
+              <div className="flex justify-between items-center w-full flex-col">
+              {restoredImage && (
+                <h3>
+                  Displaying File {index+1}/{originalPhoto.length}: <span className="text-blue-600"> {originalPhoto[index].replace('/data/', '').replace('.jpg', '')} 
+                   </span>
+                </h3>
               )}
               <div className={`${restoredLoaded ? "visible mt-6 -ml-8" : "invisible"}`}>
                 <Toggle
@@ -365,7 +364,7 @@ return (
                   onClick={() => {
                     downloadPhoto(
                       restoredImage[index]!,
-                      appendNewToName(restoredImage[index].replace('/preds/','').replace('.jpg', '.tif')!)
+                      appendNewToName(restoredImage[index]!)
                     );
                   }}
                   className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
@@ -373,6 +372,21 @@ return (
                   Download Predicted Image
                 </button>
                 </div>)}
+            </div>
+            <Footer />
+            <div className="carousel-indicators" style={{bottom: '90px'}}>
+              {/* Map through the indicators */}
+              {originalPhoto.map((_, index) => (
+                <button
+                key={index}
+                type="button"
+                data-bs-target="#carouselExample"
+                data-bs-slide-to={index}
+                // Set the active class based on the activeIndex
+                className={index === activeIndex ? 'active' : ''}
+                aria-label={`Slide ${index + 1}`}
+                onClick={() => setActiveIndex(index)} // Move to the corresponding slide on click
+              ></button>))}
             </div>
             </div>
           ))}
@@ -404,12 +418,11 @@ return (
             </div>)
             
             }
-            
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>
       </main>
-      <Footer />
+      
     </div>
   );
 }
