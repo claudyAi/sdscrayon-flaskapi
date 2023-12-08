@@ -58,6 +58,7 @@ export default function AGBM() {
   const [showSecondLoading, setShowSecondLoading] = useState(false);
   const [showThirdLoading, setShowThirdLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const isSingleImage = originalPhoto && originalPhoto.length === 1;
 
   async function generatePhoto(image: any) {
     console.log("generate");
@@ -344,6 +345,8 @@ return (
           ))}
         </div>
         {/* Carousel controls */}
+        {!isSingleImage && (
+        <>
         <button
               className="carousel-control-prev"
               type="button"
@@ -364,6 +367,7 @@ return (
               <span className="carousel-control-next-icon" aria-hidden="true"></span>
               <span className="visually-hidden">Next</span>
             </button>
+            </>)}
             </div>)
             
             }
