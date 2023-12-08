@@ -16,13 +16,14 @@
     "@bytescale/upload-widget-react": "^4.12.0",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@nextui-org/react": "^2.2.9",
     "@types/node": "20.1.4",
-    "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "@upstash/ratelimit": "^0.4.4",
     "@vercel/analytics": "^1.1.1",
     "autoprefixer": "10.4.14",
     "axios": "^1.6.2",
+    "bootstrap": "^5.3.2",
     "concurrently": "^8.2.2",
     "encoding": "^0.1.13",
     "eslint": "8.40.0",
@@ -46,5 +47,8 @@
   },
   "browser": {
     "child_process": false
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.42"
   }
 }
