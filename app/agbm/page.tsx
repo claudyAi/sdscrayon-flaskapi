@@ -72,6 +72,7 @@ export default function AGBM() {
   const isSingleImage = originalPhoto && originalPhoto.length === 1;
 
   const [isShown, setIsShown] = useState(false);
+  const [dataArr, setDataArr] = useState(data);
 
   const handleMouseOver = () => {
     setIsShown(true);
@@ -99,8 +100,10 @@ export default function AGBM() {
     }, 1300);
     setRestoredImage(newPhoto['restoredImage']);
     setOriginalPhoto(newPhoto['originalPhoto']);
+    setDataArr(newPhoto['dataArray'].result);
     console.log('restoredImage at agbm', restoredImage);
     console.log('originalPhoto at agbm', originalPhoto);
+    console.log('dataArray at agbm', dataArr);  
   }
 
   const submitHandler = (event: any) => {
@@ -297,7 +300,7 @@ return (
                   restored={restoredImage[index]!}
                 />
               )}
-              {restoredImage && originalPhoto &&  !sideBySide &&(
+              {restoredImage && originalPhoto && dataArr && !sideBySide &&(
               <div className="flex sm:space-x-4 sm:flex-row flex-col">
                       <div>
                         <h2 className="mb-1 font-medium text-lg">Uploaded Image</h2>
@@ -324,11 +327,11 @@ return (
                               onLoadingComplete={() => setRestoredLoaded(true)}
                             />
                             <div className="grid-container" style={{display: 'grid', position: 'absolute', top: '46px', right: '101px'}}>
-                              {data.map((row, rowIndex) => (
+                              {dataArr.map((row, rowIndex) => (
                                 <div key={rowIndex} className="grid-row" style={{display: 'flex'}}>
                                   {row.map((cell, colIndex) => (
                                     <div key={colIndex} className="grid-cell" style={{height: '37px', width: '37px'}} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
-                                        {isShown && <div style={{border: '1px solid #ddd', height: '37px', width: '37px',}}>{cell}</div>}
+                                        {isShown && <div style={{border: '1px solid #ddd', height: '37px', width: '37px', color: 'black'}}>{cell}</div>}
                                     </div>
                                   ))}
                                 </div>

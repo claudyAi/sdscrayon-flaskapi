@@ -22,6 +22,24 @@ async function runPythonScriptTiff(folder:string) {
      
 }
 
+async function runPythonScriptArr(folder:string) {
+  try{
+    let finalResponse = await fetch('http://127.0.0.1:5000/tifarr', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({folder:folder}),
+    });
+    let jsonTiffResponse = await finalResponse.json();
+    console.log('jsonTiffResponse: ', jsonTiffResponse); 
+    return jsonTiffResponse
+  }catch(e){
+    console.log("runPythonScriptTiff got Error:", e)
+  }
+     
+}
+
 // Create folder if it does not exist
 async function createFolder(file:string){
   var fs = require('fs');
@@ -128,12 +146,16 @@ export async function POST(req: NextRequest) {
         console.log('filename : ', jsonFinalResponse['filename']);
         // Convert TIF image to JPG 
         const restoredImage = await runPythonScriptTiff('preds');
+        const dataarr = await runPythonScriptArr('preds');
         console.log(restoredImage);
+        console.log(dataarr);
         console.log('restoredImage', restoredImage);
+        console.log('dataArray', dataarr);
         console.log('originalPhoto', OriginalPhoto);
       
     return NextResponse.json(
       {"restoredImage":restoredImage ? restoredImage : "Failed to restore image",
-      "originalPhoto":OriginalPhoto ? OriginalPhoto : "Failed to upload original image"}
+      "originalPhoto":OriginalPhoto ? OriginalPhoto : "Failed to upload original image",
+      "dataArray": dataarr ? dataarr : "Failed to get data array"}
     );
     }}
