@@ -154,7 +154,6 @@ class DS(torch.utils.data.Dataset): # set the input images in correct format to 
 def main():
     # args = parse_args()
     # print(args)
-    print('loading parameters')
     test_images_dir = "./data"
     num_workers = 8
     batch_size = 8
@@ -163,7 +162,6 @@ def main():
     # torch.jit.enable_onednn_fusion(True)
 
     # loads model from a pth file from the location specified in args.model_path
-    print('loading model')
     model = torch.load("./modelo_best.pth", map_location="cpu")
     model = model.eval()
     model = model.cuda()
@@ -172,7 +170,6 @@ def main():
 
     
     # loads all the images from location specified in args.test_images_dir
-    print('loading images')
     test_images_dir = Path(test_images_dir)
     all_files = [f for f in test_images_dir.iterdir() if f.is_file()]
     test_dataset = DS(
@@ -199,7 +196,6 @@ def main():
 
 
     # does the predictions and saves it in the folder specified in args.out_dir
-    print('does predictions and save in folder')
     with torch.no_grad():
         with tqdm.tqdm(test_loader, leave=False, mininterval=2) as pbar:
             for images, mask, target in pbar:
@@ -218,8 +214,19 @@ def main():
 
                 torch.cuda.synchronize()
 
+    outputFilePaths = [f for f in Path(out_dir).iterdir() if f.is_file()]
+    outputFilePaths_string = []
+    outputFileNames_string = []
+    for filepath in outputFilePaths:
+        filename = filepath.name
+        filepath = os.path.join(os.getcwd(), filepath)
+        outputFilePaths_string.append(filepath)
+        outputFileNames_string.append(filename)
+    print('outputFilePaths_string', outputFilePaths_string)
+    print('outputFileNames_string', outputFileNames_string)
+
     # frontend needs to recieve the image from here
-    return ({'filepath':f"{out_dir}/{original_name}_agbm.tif",'filename':f"{original_name}_agbm.tif"})
+    return ({'filepath':outputFilePaths_string, 'filename':outputFileNames_string})
 
 if __name__ == "__main__":
     main()
