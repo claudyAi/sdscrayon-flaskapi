@@ -1,0 +1,36 @@
+/* upload-button.module.css */
+.uploadContainer {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 70px;
+  text-align: center;
+  margin: 50px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px; /* Space between the drag text and the button */
+}
+
+.uploadButton:hover {
+  background-color: #0056b3;
+}
+
+.dragText {
+  color: #6c757d;
+}
+
+.hidden {
+  display: none;
+}
