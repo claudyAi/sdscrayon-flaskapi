@@ -314,9 +314,8 @@ export default function AGBM() {
                     {originalPhoto.map((photo, index) => (
                       <div
                         key={index}
-                        className={`carousel-item ${
-                          index === activeIndex ? "active" : ""
-                        }`}
+                        className={`carousel-item ${index === activeIndex ? "active" : ""
+                          }`}
                       >
                         {/* Content for each carousel item */}
                         <div className="flex justify-between items-center w-full flex-col">
@@ -333,16 +332,14 @@ export default function AGBM() {
                             </h3>
                           )}
                           <div
-                            className={`${
-                              restoredLoaded
+                            className={`${restoredLoaded
                                 ? "visible mt-6 -ml-8"
                                 : "invisible"
-                            }`}
+                              }`}
                           >
                             <Toggle
-                              className={`${
-                                restoredLoaded ? "visible mb-6" : "invisible"
-                              }`}
+                              className={`${restoredLoaded ? "visible mb-6" : "invisible"
+                                }`}
                               sideBySide={sideBySide}
                               setSideBySide={(newVal) => setSideBySide(newVal)}
                             />
@@ -476,26 +473,26 @@ export default function AGBM() {
                             </div>
                           )}
                         </div>
-                        <Footer />
-                        <div
-                          className="carousel-indicators"
-                          style={{ bottom: "90px" }}
-                        >
-                          {/* Map through the indicators */}
-                          {originalPhoto.map((_, index) => (
-                            <button
-                              key={index}
-                              type="button"
-                              data-bs-target="#carouselExample"
-                              data-bs-slide-to={index}
-                              // Set the active class based on the activeIndex
-                              className={index === activeIndex ? "active" : ""}
-                              aria-label={`Slide ${index + 1}`}
-                              onClick={() => setActiveIndex(index)} // Move to the corresponding slide on click
-                            ></button>
-                          ))}
-                        </div>
                       </div>
+                    ))}
+                  </div>
+                  <Footer />
+                  <div
+                    className="carousel-indicators"
+                    style={{ bottom: "90px" }}
+                  >
+                    {/* Map through the indicators */}
+                    {originalPhoto.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        data-bs-target="#carouselExample"
+                        data-bs-slide-to={index}
+                        // Set the active class based on the activeIndex
+                        className={index === activeIndex ? "active" : ""}
+                        aria-label={`Slide ${index + 1}`}
+                        onClick={() => setActiveIndex(index)} // Move to the corresponding slide on click
+                      ></button>
                     ))}
                   </div>
                   {/* Carousel controls */}
