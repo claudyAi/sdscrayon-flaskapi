@@ -12,6 +12,7 @@ import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
+import styles from "../../styles/upload-button.module.css";
 
 const data = [
   [
@@ -257,24 +258,27 @@ export default function AGBM() {
               {/* Content before carousel */}
               {!originalPhoto && (
                 <div>
-                  <form
-                    onSubmit={submitHandler}
-                    method="post"
-                    encType="multipart/form-data"
-                  >
-                    <input
-                      type="file"
-                      name="imageInput"
-                      multiple
-                      onChange={(event) => setFileInput(event.target.files)}
-                    />
-                    <button
-                      type="submit"
-                      className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md"
+                  <div className={styles.uploadContainer}>
+                    <form
+                      onSubmit={submitHandler}
+                      method="post"
+                      encType="multipart/form-data"
                     >
-                      Upload
-                    </button>
-                  </form>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        name="imageInput"
+                        multiple
+                        onChange={(event) => setFileInput(event.target.files)}
+                        className="hidden"
+                      />
+
+                      <button type="submit" className={styles.uploadButton}>
+                        Upload a .tiff or .shp
+                      </button>
+                      <p className={styles.dragText}>... or drag and drop</p>
+                    </form>
+                  </div>
                 </div>
               )}
               {loading && isShpFile && (
