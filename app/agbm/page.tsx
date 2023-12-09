@@ -419,7 +419,8 @@ export default function AGBM() {
                                                 {isShown && (
                                                   <div
                                                     style={{
-                                                      border: "1px solid #ddd",
+                                                      border: "1px solid black",
+                                                      backgroundColor: 'rgba(255, 255, 255, 0.20)',
                                                       height: "37px",
                                                       width: "37px",
                                                       color: "black",
