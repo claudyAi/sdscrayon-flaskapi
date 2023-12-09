@@ -13,18 +13,16 @@ import downloadPhoto from "../../utils/downloadPhoto";
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
-const data = [
-  [
-    ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"],
-    ["A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2"],
-    ["A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3"],
-    ["A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4"],
-    ["A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5"],
-    ["A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6"],
-    ["A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7"],
-    ["A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8"],
-  ],
-];
+const data = [[
+  ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"],
+  ["A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2"],
+  ["A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3"],
+  ["A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4"],
+  ["A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5"],
+  ["A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6"],
+  ["A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7"],
+  ["A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8"],
+]];
 
 export default function AGBM() {
   const [originalPhoto, setOriginalPhoto] = useState<string[] | null>(null);
@@ -51,145 +49,68 @@ export default function AGBM() {
     setIsShown(false);
   };
 
-  //old
-  // async function generatePhoto(image: any) {
-  //   console.log("generate");
-  //   console.log(image);
-  //   await new Promise((resolve) => setTimeout(resolve, 200));
-  //   setLoading(true);
-  //   const res = await fetch("/generate", {
-  //     method: "POST",
-  //     body: image,
-  //   });
-  //   let newPhoto = await res.json();
-  //   console.log("new photo", newPhoto);
-  //   if (res.status !== 200) {
-  //     setError(newPhoto);
-  //   }
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 1300);
-  //   setRestoredImage(newPhoto["restoredImage"]);
-  //   setOriginalPhoto(newPhoto["originalPhoto"]);
-  //   setDataArr(newPhoto["dataArray"].result);
-  //   console.log("restoredImage at agbm", restoredImage);
-  //   console.log("originalPhoto at agbm", originalPhoto);
-  //   console.log("dataArray at agbm", dataArr);
-  // }
-
-  //new
   async function generatePhoto(image: any) {
-    try {
-      const res = await fetch("/generate", {
-        method: "POST",
-        body: image,
-      });
-
-      // Check if the response was not successful
-      if (!res.ok) {
-        // Construct an error message using the response status
-        const errorText = `HTTP error! status: ${res.status}`;
-        console.error(errorText);
-        setError(errorText);
-        return; // Exit the function early
-      }
-
-      // If the response was successful, parse it as JSON
-      const newPhoto = await res.json();
-
-      // Set the state with the new photo details
-      setRestoredImage(newPhoto["restoredImage"]);
-      setOriginalPhoto(newPhoto["originalPhoto"]);
-      setDataArr(newPhoto["dataArray"].result);
-    } catch (error) {
-      // Catch any network error or parsing error
-      console.error("Error in generatePhoto:", error);
-      // setError(`An error occurred: ${error.message}`);
-    } finally {
-      // Stop loading in any case
-      setLoading(false);
+    console.log("generate");
+    console.log(image);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    setLoading(true);
+    const res = await fetch("/generate", {
+      method: "POST",
+      body: image,
+    });
+    let newPhoto = await res.json();
+    console.log("new photo", newPhoto);
+    if (res.status !== 200) {
+      setError(newPhoto);
     }
+    setTimeout(() => {
+      setLoading(false);
+    }, 1300);
+    setRestoredImage(newPhoto["restoredImage"]);
+    setOriginalPhoto(newPhoto["originalPhoto"]);
+    setDataArr(newPhoto["dataArray"].result);
+    console.log("restoredImage at agbm", restoredImage);
+    console.log("originalPhoto at agbm", originalPhoto);
+    console.log("dataArray at agbm", dataArr);
   }
 
-  //old
-
-  // const submitHandler = (event: any) => {
-  //   // handle validations
-  //   event.preventDefault();
-  //   console.log("event", event.target);
-  //   const data = new FormData(event.target);
-  //   const uploadedFiles = data.getAll("imageInput");
-  //   const indvFiles = new FormData();
-
-  //   // Var that track if .shp file found
-  //   let foundShpFile = false;
-
-  //   for (let i = 0; i < uploadedFiles.length; i++) {
-  //     const indvFile: File = uploadedFiles[i] as File;
-  //     console.log("indv files", indvFile.name);
-  //     indvFiles.append("files", uploadedFiles[i]);
-  //     console.log(uploadedFiles[i]);
-
-  //     console.log("uploadedFiles.length", uploadedFiles.length);
-
-  //     // Check for .shp file
-  //     if (indvFile.name.endsWith(".shp")) {
-  //       foundShpFile = true;
-  //     }
-  //   }
-  //   console.log("indvFiles", indvFiles);
-  //   setIsShpFile(foundShpFile); // Update state based on .shp file presence
-  //   generatePhoto(indvFiles);
-  //   for (let i = 0; i < uploadedFiles.length; i++) {
-  //     const indvFile: File = uploadedFiles[i] as File;
-  //     if (indvFile.type != "image/tiff") {
-  //       uploadedFiles.length = 1;
-  //     }
-  //   }
-  //   handlePrev(uploadedFiles.length);
-  //   handleNext(uploadedFiles.length);
-  // };
-
   const submitHandler = (event: any) => {
-    event.preventDefault(); // handle validations
-    setError(null); // Clear any existing errors
+    // handle validations
+    event.preventDefault();
     console.log("event", event.target);
     const data = new FormData(event.target);
     const uploadedFiles = data.getAll("imageInput");
+    const indvFiles = new FormData();
 
-    if (uploadedFiles.length === 0) {
-      // If no files are selected, set an error message
-      setError("Please select a file to upload.");
-    } else {
-      // Check if files are selected
-      setLoading(true); // Only set loading to true when files are selected
-      const indvFiles = new FormData();
-      let foundShpFile = false;
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        const indvFile: File = uploadedFiles[i] as File;
-        console.log("indv files", indvFile.name);
-        if (indvFile.name.endsWith(".shp")) {
-          foundShpFile = true;
-        }
-        indvFiles.append("files", uploadedFiles[i]);
-        console.log(uploadedFiles[i]);
+    // Var that track if .shp file found
+    let foundShpFile = false;
 
-        console.log("uploadedFiles.length", uploadedFiles.length);
-      }
-      console.log("indvFiles", indvFiles);
-      setIsShpFile(foundShpFile); // Update state based on .shp file presence
-      generatePhoto(indvFiles);
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        const indvFile: File = uploadedFiles[i] as File;
-        if (indvFile.type != "image/tiff") {
-          uploadedFiles.length = 1;
-        }
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const indvFile: File = uploadedFiles[i] as File;
+      console.log("indv files", indvFile.name);
+      indvFiles.append("files", uploadedFiles[i]);
+      console.log(uploadedFiles[i]);
+
+      console.log("uploadedFiles.length", uploadedFiles.length);
+
+      // Check for .shp file
+      if (indvFile.name.endsWith(".shp")) {
+        foundShpFile = true;
       }
     }
-
+    console.log("indvFiles", indvFiles);
+    setIsShpFile(foundShpFile); // Update state based on .shp file presence
+    generatePhoto(indvFiles);
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const indvFile: File = uploadedFiles[i] as File;
+      if (indvFile.type != "image/tiff") {
+        uploadedFiles.length = 1;
+      }
+    }
     handlePrev(uploadedFiles.length);
     handleNext(uploadedFiles.length);
   };
+
   const handlePrev = (uploadedFilesLength: any) => {
     const newIndex = (activeIndex + uploadedFilesLength) % uploadedFilesLength;
     setActiveIndex(newIndex);
@@ -255,7 +176,7 @@ export default function AGBM() {
           <AnimatePresence mode="wait">
             <motion.div className="flex justify-between items-center w-full flex-col mt-4">
               {/* Content before carousel */}
-              {!originalPhoto && (
+              {!originalPhoto && !isShpFile && !showSecondLoading && !showThirdLoading && !showFourthLoading &&(
                 <div>
                   <form
                     onSubmit={submitHandler}
@@ -386,16 +307,15 @@ export default function AGBM() {
                 </div>
               )}
               {/* Check if content is loaded before rendering the carousel */}
-              {restoredImage! && originalPhoto! && (
+              {restoredImage! && originalPhoto! && !showSecondLoading && !showThirdLoading && !showFourthLoading &&(
                 <div id="carouselExample" className="carousel slide">
                   <div className="carousel-inner">
                     {/* Map through originalPhoto to render carousel items */}
                     {originalPhoto.map((photo, index) => (
                       <div
                         key={index}
-                        className={`carousel-item ${
-                          index === activeIndex ? "active" : ""
-                        }`}
+                        className={`carousel-item ${index === activeIndex ? "active" : ""
+                          }`}
                       >
                         {/* Content for each carousel item */}
                         <div className="flex justify-between items-center w-full flex-col">
@@ -412,16 +332,14 @@ export default function AGBM() {
                             </h3>
                           )}
                           <div
-                            className={`${
-                              restoredLoaded
+                            className={`${restoredLoaded
                                 ? "visible mt-6 -ml-8"
                                 : "invisible"
-                            }`}
+                              }`}
                           >
                             <Toggle
-                              className={`${
-                                restoredLoaded ? "visible mb-6" : "invisible"
-                              }`}
+                              className={`${restoredLoaded ? "visible mb-6" : "invisible"
+                                }`}
                               sideBySide={sideBySide}
                               setSideBySide={(newVal) => setSideBySide(newVal)}
                             />
@@ -441,35 +359,22 @@ export default function AGBM() {
                                   <h2 className="mb-1 font-medium text-lg">
                                     Uploaded Image
                                   </h2>
-                                  <div
-                                    style={{ width: "512px", height: "24px" }}
-                                  >
-                                    &nbsp;
-                                  </div>
+                                  <div style={{width:'512px', height:'24px'}}>&nbsp;</div>
                                   <div style={{ position: "relative" }}>
-                                    <Image
-                                      alt="original photo"
-                                      src={photo}
-                                      className="rounded-2xl relative w-full h-96"
-                                      width={475}
-                                      height={475}
-                                    />
+                                  <Image
+                                    alt="original photo"
+                                    src={photo}
+                                    className="rounded-2xl relative w-full h-96"
+                                    width={475}
+                                    height={475}
+                                  />
                                   </div>
                                 </div>
                                 <div className="sm:mt-0 mt-8">
                                   <h2 className="mb-1 font-medium text-lg">
-                                    Predicted Image
+                                    Predicted Image  
                                   </h2>
-                                  <div
-                                    style={{
-                                      fontSize: "15px",
-                                      width: "512px",
-                                      height: "24px",
-                                    }}
-                                  >
-                                    Hover over to see a 250x250m of AGBM Values
-                                    (Mg ha-1)
-                                  </div>
+                                  <div style={{fontSize:'15px', width:'512px', height:'24px'}}>Hover over to see a 250x250m of AGBM Values (Mg ha-1)</div>
                                   <a
                                     href={restoredImage[index]}
                                     target="_blank"
@@ -516,8 +421,7 @@ export default function AGBM() {
                                                   <div
                                                     style={{
                                                       border: "1px solid black",
-                                                      backgroundColor:
-                                                        "rgba(255, 255, 255, 0.20)",
+                                                      backgroundColor: 'rgba(255, 255, 255, 0.20)',
                                                       height: "37px",
                                                       width: "37px",
                                                       color: "black",
@@ -551,6 +455,7 @@ export default function AGBM() {
                                 setRestoredLoaded(false);
                                 setError(null);
                                 setActiveIndex(0);
+                                setIsShpFile(false);
                               }}
                               className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"
                             >
