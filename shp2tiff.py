@@ -99,7 +99,7 @@ def convert_shp2tif(filepath, filename):
     shapefile = gpd.read_file(filepath)
     print(shapefile)
     # list of polygons
-    grid = partition(shapefile.geometry[7])
+    grid = partition(shapefile)
     # specify time
     t = ("2022-02-01", "2022-02-28")
     # visualisation
