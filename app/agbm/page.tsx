@@ -441,6 +441,7 @@ export default function AGBM() {
                                                       height: "37px",
                                                       width: "37px",
                                                       color: "black",
+                                                      fontSize: "1.4vmin"
                                                     }}
                                                   >
                                                     {cell}
