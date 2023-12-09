@@ -362,6 +362,8 @@ export default function AGBM() {
                                   <h2 className="mb-1 font-medium text-lg">
                                     Uploaded Image
                                   </h2>
+                                  <div style={{width:'512px', height:'24px'}}>&nbsp;</div>
+                                  <div style={{ position: "relative" }}>
                                   <Image
                                     alt="original photo"
                                     src={photo}
@@ -369,11 +371,13 @@ export default function AGBM() {
                                     width={475}
                                     height={475}
                                   />
+                                  </div>
                                 </div>
                                 <div className="sm:mt-0 mt-8">
                                   <h2 className="mb-1 font-medium text-lg">
-                                    Predicted Image
+                                    Predicted Image  
                                   </h2>
+                                  <div style={{fontSize:'15px', width:'512px', height:'24px'}}>Hover over to see a 250x250m of AGBM Values (Mg ha-1)</div>
                                   <a
                                     href={restoredImage[index]}
                                     target="_blank"
@@ -396,7 +400,7 @@ export default function AGBM() {
                                           display: "grid",
                                           position: "absolute",
                                           top: "46px",
-                                          right: "101px",
+                                          right: "102px",
                                         }}
                                       >
                                         {dataArr[index].map((row, rowIndex) => (

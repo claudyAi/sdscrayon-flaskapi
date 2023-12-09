@@ -31,32 +31,32 @@ export default function HomePage() {
           <div className="flex flex-col space-y-10 mt-4 mb-16">
             <div className="flex sm:space-x-8 sm:flex-row flex-col">
               <div>
-                <h3 className="mb-1 font-medium text-lg"> Gedi.tif</h3>
+                <h3 className="mb-1 font-medium text-lg"> Validation.tif</h3>
                 <Image
-                  alt="gedi tif image"
-                  src="/gedi2.jpg"
+                  alt="Validation tif image"
+                  src="/k89cci.png"
                   className="w-full object-cover h-96 rounded-2xl"
                   width={400}
                   height={400}
                 />
               </div>
               <div className="sm:mt-0 mt-8">
-                <h3 className="mb-1 font-medium text-lg">Sentinel.tif</h3>
+                <h3 className="mb-1 font-medium text-lg">Sentinel2.tif</h3>
                 <Image
-                  alt="Generated photo of a room with roomGPT.io"
+                  alt="Sentinel 2 tif image"
                   width={400}
                   height={400}
-                  src="/sent2.jpg"
+                  src="/k89sent.png"
                   className="w-full object-cover h-96 rounded-2xl sm:mt-0 mt-2"
                 />
               </div>
               <div className="sm:mt-0 mt-8">
                 <h3 className="mb-1 font-medium text-lg">Predicted.tif</h3>
                 <Image
-                  alt="Generated photo of a room with roomGPT.io"
+                  alt="Prediction tif image"
                   width={400}
                   height={400}
-                  src="/pred.jpg"
+                  src="/k89.png"
                   className="w-full object-cover h-96 rounded-2xl sm:mt-0 mt-2"
                 />
               </div>
