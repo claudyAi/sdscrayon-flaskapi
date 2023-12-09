@@ -24,39 +24,6 @@ const data = [
   ['A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8'],
 ];
 
-// const options: UploadWidgetConfig = {
-//   apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-//     ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
-//     : "free",
-//   // maxFileCount: 1,
-//   mimeTypes: [
-//     "image/jpeg",
-//     "image/png",
-//     "image/jpg",
-//     "image/tiff",
-//     "image/shp",
-//     "application/octet-stream",
-//     "application/x-esri-shape",
-//     "application/vnd.esri.shapefile",
-//   ],
-//   editor: { images: { crop: false } },
-//   styles: {
-//     colors: {
-//       primary: "#2563EB", // Primary buttons & links
-//       error: "#d23f4d", // Error messages
-//       shade100: "#fff", // Standard text
-//       shade200: "#fffe", // Secondary button text
-//       shade300: "#fffd", // Secondary button text (hover)
-//       shade400: "#fffc", // Welcome text
-//       shade500: "#fff9", // Modal close button
-//       shade600: "#fff7", // Border
-//       shade700: "#fff2", // Progress indicator background
-//       shade800: "#fff1", // File item background
-//       shade900: "#ffff", // Various (draggable crop buttons, etc.)
-//     },
-//   },
-// };
-
 export default function AGBM() {
   const [originalPhoto, setOriginalPhoto] = useState<string[] | null>(null);
   const [restoredImage, setRestoredImage] = useState<string[] | null>(null);
@@ -70,8 +37,8 @@ export default function AGBM() {
   const [showThirdLoading, setShowThirdLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const isSingleImage = originalPhoto && originalPhoto.length === 1;
-
   const [isShown, setIsShown] = useState(false);
+  const [dataArr, setDataArr] = useState(data);
 
   const handleMouseOver = () => {
     setIsShown(true);
@@ -99,8 +66,10 @@ export default function AGBM() {
     }, 1300);
     setRestoredImage(newPhoto['restoredImage']);
     setOriginalPhoto(newPhoto['originalPhoto']);
+    setDataArr(newPhoto['dataArray'].result);
     console.log('restoredImage at agbm', restoredImage);
     console.log('originalPhoto at agbm', originalPhoto);
+    console.log('dataArray at agbm', dataArr);  
   }
 
   const submitHandler = (event: any) => {
@@ -126,17 +95,16 @@ export default function AGBM() {
     }
     handlePrev(uploadedFiles.length);
     handleNext(uploadedFiles.length);
-    setPhotoName('predicted'); // hardcode downloaded name for now
   };
 
   const handlePrev = (uploadedFilesLength:any) => {
-    const newIndex = (activeIndex - 1 + uploadedFilesLength) % uploadedFilesLength;
+    const newIndex = (activeIndex + uploadedFilesLength) % uploadedFilesLength;
     setActiveIndex(newIndex);
     console.log('activeIndex',activeIndex);
   };
   
   const handleNext = (uploadedFilesLength:any) => {
-    const newIndex = (activeIndex + 1) % uploadedFilesLength;
+    const newIndex = (activeIndex) % uploadedFilesLength;
     setActiveIndex(newIndex);
     console.log('newIndex',newIndex);
   };
@@ -170,8 +138,7 @@ return (
     <Header />
     <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8">
       <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
-        Generate <span className="text-blue-600">AGBM predictions </span> from
-        .tif 
+        Generate <span className="text-blue-600">AGBM predictions </span> 
       </h1>
       <ResizablePanel>
         <AnimatePresence mode="wait">
@@ -278,11 +245,12 @@ return (
                     className={`carousel-item ${index === activeIndex ? 'active' : ''}`}
                   >
               {/* Content for each carousel item */}
-              <div className="flex justify-between items-center w-full flex-col mt-4">
-              {!restoredImage && (
-                <>
-                  <div className="mt-4 w-full max-w-sm"></div>
-                </>
+              <div className="flex justify-between items-center w-full flex-col">
+              {restoredImage && (
+                <h3>
+                  Displaying File {index+1}/{originalPhoto.length}: <span className="text-blue-600"> {originalPhoto[index].replace('/data/', '').replace('.jpg', '')} 
+                   </span>
+                </h3>
               )}
               <div className={`${restoredLoaded ? "visible mt-6 -ml-8" : "invisible"}`}>
                 <Toggle
@@ -297,7 +265,7 @@ return (
                   restored={restoredImage[index]!}
                 />
               )}
-              {restoredImage && originalPhoto &&  !sideBySide &&(
+              {restoredImage && originalPhoto && dataArr && !sideBySide &&(
               <div className="flex sm:space-x-4 sm:flex-row flex-col">
                       <div>
                         <h2 className="mb-1 font-medium text-lg">Uploaded Image</h2>
@@ -324,11 +292,11 @@ return (
                               onLoadingComplete={() => setRestoredLoaded(true)}
                             />
                             <div className="grid-container" style={{display: 'grid', position: 'absolute', top: '46px', right: '101px'}}>
-                              {data.map((row, rowIndex) => (
+                              {dataArr.map((row, rowIndex) => (
                                 <div key={rowIndex} className="grid-row" style={{display: 'flex'}}>
                                   {row.map((cell, colIndex) => (
                                     <div key={colIndex} className="grid-cell" style={{height: '37px', width: '37px'}} onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
-                                        {isShown && <div style={{border: '1px solid #ddd', height: '37px', width: '37px',}}>{cell}</div>}
+                                        {isShown && <div style={{border: '1px solid #ddd', height: '37px', width: '37px', color: 'black'}}>{cell}</div>}
                                     </div>
                                   ))}
                                 </div>
@@ -365,14 +333,28 @@ return (
                   onClick={() => {
                     downloadPhoto(
                       restoredImage[index]!,
-                      appendNewToName(restoredImage[index].replace('/preds/','').replace('.jpg', '.tif')!)
-                    );
+                      appendNewToName(restoredImage[index]!));
                   }}
                   className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
                 >
                   Download Predicted Image
                 </button>
                 </div>)}
+            </div>
+            <Footer />
+            <div className="carousel-indicators" style={{bottom: '90px'}}>
+              {/* Map through the indicators */}
+              {originalPhoto.map((_, index) => (
+                <button
+                key={index}
+                type="button"
+                data-bs-target="#carouselExample"
+                data-bs-slide-to={index}
+                // Set the active class based on the activeIndex
+                className={index === activeIndex ? 'active' : ''}
+                aria-label={`Slide ${index + 1}`}
+                onClick={() => setActiveIndex(index)} // Move to the corresponding slide on click
+              ></button>))}
             </div>
             </div>
           ))}
@@ -404,12 +386,11 @@ return (
             </div>)
             
             }
-            
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>
       </main>
-      <Footer />
+      
     </div>
   );
 }

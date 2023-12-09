@@ -15,10 +15,10 @@ export default function HomePage() {
             <SquigglyLines />
             <span className="relative">AGBM values</span>
           </span>{" "}
-          using Ai
+          using AI
         </h1>
         <h2 className="mx-auto mt-12 max-w-xl text-lg sm:text-gray-400  text-gray-500 leading-7">
-          Upload a .tif image of a region with biomass and predict the AGBM
+          Upload a shapefile or .tif image of a region with biomass and predict the AGBM
           (Above Ground Biomass) value of how much biomass there is!
         </h2>
         <Link

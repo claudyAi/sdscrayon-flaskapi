@@ -22,6 +22,24 @@ async function runPythonScriptTiff(folder:string) {
      
 }
 
+async function runPythonScriptArr(folder:string) {
+  try{
+    let finalResponse = await fetch('http://127.0.0.1:5000/tifarr', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({folder:folder}),
+    });
+    let jsonTiffResponse = await finalResponse.json();
+    console.log('jsonTiffResponse: ', jsonTiffResponse); 
+    return jsonTiffResponse
+  }catch(e){
+    console.log("runPythonScriptTiff got Error:", e)
+  }
+     
+}
+
 // Create folder if it does not exist
 async function createFolder(file:string){
   var fs = require('fs');
@@ -32,16 +50,38 @@ async function createFolder(file:string){
   }
 }
 
-export async function POST(req: NextRequest) {
-  // Create folder if it does not exist
-  createFolder('data');
-  createFolder('preds');
-  createFolder('public/data');
-  createFolder('public/preds');
-  createFolder('public/shp2tif');
-  console.log('done creating folders');
-  console.log("--------------------------");
+async function deleteFolder(dir_path:string){
+const fs = require('node:fs');
+if (fs.existsSync(dir_path)) {
+  fs.readdirSync(dir_path).forEach(function(entry:any) {
+      var entry_path = path.join(dir_path, entry);
+      if (fs.lstatSync(entry_path).isDirectory()) {
+        deleteFolder(entry_path);
+      } else {
+          fs.unlinkSync(entry_path);
+      }
+  });
+  fs.rmdirSync(dir_path);
+}}
 
+const foldersToDeleteAndCreate = [
+  'data',
+  'preds',
+  'public/data',
+  'public/preds',
+  'public/shp2tif',
+];
+const deleteAndCreateFolders = async () => {
+  for (const folder of foldersToDeleteAndCreate) {
+    await deleteFolder(folder);
+    await createFolder(folder);
+  }
+  console.log('Done deleting and creating folders');
+  console.log('--------------------------');
+};
+
+export async function POST(req: NextRequest) {
+  deleteAndCreateFolders();
   console.log('reach generate')
   const formData = await req.formData();
   console.log(formData);
@@ -128,12 +168,16 @@ export async function POST(req: NextRequest) {
         console.log('filename : ', jsonFinalResponse['filename']);
         // Convert TIF image to JPG 
         const restoredImage = await runPythonScriptTiff('preds');
+        const dataarr = await runPythonScriptArr('preds');
         console.log(restoredImage);
+        console.log(dataarr);
         console.log('restoredImage', restoredImage);
+        console.log('dataArray', dataarr);
         console.log('originalPhoto', OriginalPhoto);
       
     return NextResponse.json(
       {"restoredImage":restoredImage ? restoredImage : "Failed to restore image",
-      "originalPhoto":OriginalPhoto ? OriginalPhoto : "Failed to upload original image"}
+      "originalPhoto":OriginalPhoto ? OriginalPhoto : "Failed to upload original image",
+      "dataArray": dataarr ? dataarr : "Failed to get data array"}
     );
     }}

@@ -17,6 +17,7 @@ from visualize_tiff import visualise_tiff
 from submitflask import main
 from flask_restful import reqparse, Api, Resource
 from shp2tiff import convert_shp2tif
+from grid import find_array
 import os
 
 app = Flask(__name__)
@@ -48,6 +49,19 @@ def upload_image():
     return jsonify(main())
 
 # Run Python Script to open TIF image and save as JPG 
+@app.route('/tifarr', methods=['POST'])
+def convert_tiff2arr():
+    print("receive tiff2arr post")
+    # filepath = request.json['filepath'] 
+    # filename = request.json['filename']
+    folder = request.json['folder']
+    # print('filepath', filepath)
+    # print('filename', filename)
+    print('folder', folder)
+    result = find_array(folder, 200, 8)
+    return jsonify({'result': result})
+
+# Run Python Script to open TIF image and get array
 @app.route('/tiff2jpg', methods=['POST'])
 def convert_tiff2jpg():
     print("receive tiff2jpg post")
