@@ -41,6 +41,8 @@ export default function AGBM() {
   const [isShown, setIsShown] = useState(false);
   const [dataArr, setDataArr] = useState(data);
   const [isShpFile, setIsShpFile] = useState(false); //js
+  const [filesChosen, setFilesChosen] = useState(false);
+
 
   const handleMouseOver = () => {
     setIsShown(true);
@@ -123,6 +125,17 @@ export default function AGBM() {
     console.log("newIndex", newIndex);
   };
 
+  // Update the file input change handler to set the state when files are chosen
+  const handleFileInputChange = (event:any) => {
+    setFileInput(event.target.files);
+    // Enable the upload button if files have been chosen
+    if (event.target.files.length > 0) {
+      setFilesChosen(true);
+    } else {
+      setFilesChosen(false);
+    }
+  };
+
   useEffect(() => {
     require("bootstrap/dist/js/bootstrap");
     let timer;
@@ -187,11 +200,14 @@ export default function AGBM() {
                       type="file"
                       name="imageInput"
                       multiple
-                      onChange={(event) => setFileInput(event.target.files)}
+                      onChange={handleFileInputChange}
                     />
                     <button
                       type="submit"
-                      className="ring-2 px-3 py-2 bg-blue-800 text-white rounded-md"
+                      className={`ring-2 px-3 py-2 bg-blue-800 text-white rounded-md ${
+                        !filesChosen ? 'opacity-50 cursor-not-allowed' : '' // Add styles for disabled state
+                      }`}
+                      disabled={!filesChosen} // Disable button based on 'filesChosen' state
                     >
                       Upload
                     </button>
@@ -456,6 +472,7 @@ export default function AGBM() {
                                 setError(null);
                                 setActiveIndex(0);
                                 setIsShpFile(false);
+                                setFilesChosen(false);
                               }}
                               className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"
                             >
