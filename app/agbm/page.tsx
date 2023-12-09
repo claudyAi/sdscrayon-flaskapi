@@ -13,7 +13,7 @@ import downloadPhoto from "../../utils/downloadPhoto";
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 
-const data = [
+const data = [[
   ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1"],
   ["A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2"],
   ["A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3"],
@@ -22,7 +22,7 @@ const data = [
   ["A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6"],
   ["A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7"],
   ["A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8"],
-];
+]];
 
 export default function AGBM() {
   const [originalPhoto, setOriginalPhoto] = useState<string[] | null>(null);
@@ -314,9 +314,8 @@ export default function AGBM() {
                     {originalPhoto.map((photo, index) => (
                       <div
                         key={index}
-                        className={`carousel-item ${
-                          index === activeIndex ? "active" : ""
-                        }`}
+                        className={`carousel-item ${index === activeIndex ? "active" : ""
+                          }`}
                       >
                         {/* Content for each carousel item */}
                         <div className="flex justify-between items-center w-full flex-col">
@@ -333,16 +332,14 @@ export default function AGBM() {
                             </h3>
                           )}
                           <div
-                            className={`${
-                              restoredLoaded
+                            className={`${restoredLoaded
                                 ? "visible mt-6 -ml-8"
                                 : "invisible"
-                            }`}
+                              }`}
                           >
                             <Toggle
-                              className={`${
-                                restoredLoaded ? "visible mb-6" : "invisible"
-                              }`}
+                              className={`${restoredLoaded ? "visible mb-6" : "invisible"
+                                }`}
                               sideBySide={sideBySide}
                               setSideBySide={(newVal) => setSideBySide(newVal)}
                             />
@@ -362,6 +359,8 @@ export default function AGBM() {
                                   <h2 className="mb-1 font-medium text-lg">
                                     Uploaded Image
                                   </h2>
+                                  <div style={{width:'512px', height:'24px'}}>&nbsp;</div>
+                                  <div style={{ position: "relative" }}>
                                   <Image
                                     alt="original photo"
                                     src={photo}
@@ -369,11 +368,13 @@ export default function AGBM() {
                                     width={475}
                                     height={475}
                                   />
+                                  </div>
                                 </div>
                                 <div className="sm:mt-0 mt-8">
                                   <h2 className="mb-1 font-medium text-lg">
-                                    Predicted Image
+                                    Predicted Image  
                                   </h2>
+                                  <div style={{fontSize:'15px', width:'512px', height:'24px'}}>Hover over to see a 250x250m of AGBM Values (Mg ha-1)</div>
                                   <a
                                     href={restoredImage[index]}
                                     target="_blank"
@@ -396,10 +397,10 @@ export default function AGBM() {
                                           display: "grid",
                                           position: "absolute",
                                           top: "46px",
-                                          right: "101px",
+                                          right: "102px",
                                         }}
                                       >
-                                        {dataArr.map((row, rowIndex) => (
+                                        {dataArr[index].map((row, rowIndex) => (
                                           <div
                                             key={rowIndex}
                                             className="grid-row"
@@ -419,7 +420,8 @@ export default function AGBM() {
                                                 {isShown && (
                                                   <div
                                                     style={{
-                                                      border: "1px solid #ddd",
+                                                      border: "1px solid black",
+                                                      backgroundColor: 'rgba(255, 255, 255, 0.20)',
                                                       height: "37px",
                                                       width: "37px",
                                                       color: "black",
@@ -475,26 +477,26 @@ export default function AGBM() {
                             </div>
                           )}
                         </div>
-                        <Footer />
-                        <div
-                          className="carousel-indicators"
-                          style={{ bottom: "90px" }}
-                        >
-                          {/* Map through the indicators */}
-                          {originalPhoto.map((_, index) => (
-                            <button
-                              key={index}
-                              type="button"
-                              data-bs-target="#carouselExample"
-                              data-bs-slide-to={index}
-                              // Set the active class based on the activeIndex
-                              className={index === activeIndex ? "active" : ""}
-                              aria-label={`Slide ${index + 1}`}
-                              onClick={() => setActiveIndex(index)} // Move to the corresponding slide on click
-                            ></button>
-                          ))}
-                        </div>
                       </div>
+                    ))}
+                  </div>
+                  <Footer />
+                  <div
+                    className="carousel-indicators"
+                    style={{ bottom: "90px" }}
+                  >
+                    {/* Map through the indicators */}
+                    {originalPhoto.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        data-bs-target="#carouselExample"
+                        data-bs-slide-to={index}
+                        // Set the active class based on the activeIndex
+                        className={index === activeIndex ? "active" : ""}
+                        aria-label={`Slide ${index + 1}`}
+                        onClick={() => setActiveIndex(index)} // Move to the corresponding slide on click
+                      ></button>
                     ))}
                   </div>
                   {/* Carousel controls */}

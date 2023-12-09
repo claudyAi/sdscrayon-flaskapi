@@ -19,5 +19,5 @@ def find_array(folder, originsize, finalsize):
             band_1 = data_set.GetRasterBand(1)
             a = band_1.ReadAsArray()
             finalarr = a.reshape([finalsize, originsize//finalsize, finalsize, originsize//finalsize]).mean(3).mean(1).round()
-            # finallist.append(np.rint(finalarr).tolist())
-            return np.rint(finalarr).tolist()
+            finallist.append(np.rint(finalarr).tolist())
+    return finallist
