@@ -20,6 +20,8 @@ def grid_bounds(geom):
         for j in range(len(gy)-1):
             poly_ij = Polygon([[gx[i],gy[j]],[gx[i],gy[j+1]],[gx[i+1],gy[j+1]],[gx[i+1],gy[j]]])
             grid.append( poly_ij )
+    if grid == []:
+        grid.append(geom)
     return grid
 
 def partition(geom):
@@ -99,7 +101,7 @@ def convert_shp2tif(filepath, filename):
     shapefile = gpd.read_file(filepath)
     print(shapefile)
     # list of polygons
-    grid = partition(shapefile)
+    grid = partition(shapefile.geometry[0])
     # specify time
     t = ("2022-02-01", "2022-02-28")
     # visualisation
