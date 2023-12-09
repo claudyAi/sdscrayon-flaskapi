@@ -68,15 +68,29 @@ def convert_shp2tifff_files():
     print("receive shp2tiff post")
     print("request",request)
     print("request.form",request.form)
-
-    filepath_list = request.form.getlist('filePath')
-    filename_list = request.form.getlist('fileName')
-
-    for filepath, filename_with_extension in zip(filepath_list, filename_list):
-        root, extension = os.path.splitext(filename_with_extension)
-        if extension == '.shp':
-            filename = root
-            print("Filename without extension:", filename)
+    # filepaths = request.form.getlist('filePath')
+    # filenames = request.form.getlist('fileName')
+    # print("File Paths:", filepaths)
+    # print("File Names:", filenames)
+    
+    filepath = request.form['filePath']
+    filename_with_extension = request.form['fileName']
+    # Split the filename and extension
+    root, extension = os.path.splitext(filename_with_extension)
+    # Get the filename without extension
+    filename = root
+    print("Filename without extension:", filename)
+    print(jsonify(convert_shp2tif(filepath, filename)))
+    # for i in request.form:
+    #     print('indv',i)
+    # print(request.form['filePath'])
+    # print(request.form['fileName'])
+    # for i in request.form['filePath']:
+    #     print(i)
+    # filepath = request.form['filePath'] 
+    # filename = request.form['fileName'].replace('.shp', ' ')
+    # print('filepath', filepath)
+    # print('filename', filename)
     return jsonify(convert_shp2tif(filepath, filename))
 
 if __name__ == '__main__':
