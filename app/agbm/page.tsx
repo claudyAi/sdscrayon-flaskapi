@@ -288,7 +288,7 @@ export default function AGBM() {
                         alt="1 icon"
                       />
                       <p className="text-left font-medium">
-                        Converting .shp file to .tiff
+                        Converting .shp file to .tif
                       </p>
                     </div>
                     <span className="pt-4">
@@ -308,7 +308,7 @@ export default function AGBM() {
                         alt="1 icon"
                       />
                       <p className="text-left font-medium">
-                        Received .tiff file
+                        Received .tif file
                       </p>
                     </div>
                     <span className="pt-4">
