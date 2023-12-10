@@ -229,7 +229,17 @@ export default function AGBM() {
                       </p>
                     </div>
                     <span className="pt-4">
-                      <LoadingDots color="white" style="large" />
+                    {showSecondLoading ? (
+                      <span className="pt-4 flex items-center justify-center">
+                      <Image
+                        src="/white-tick.png"
+                        width={20}
+                        height={20}
+                        alt="1 icon"
+                      />
+                      </span>
+                    ) : (
+                      <LoadingDots color="white" style="large" /> )}
                     </span>
                   </div>
                 </span>
@@ -249,7 +259,17 @@ export default function AGBM() {
                       </p>
                     </div>
                     <span className="pt-4">
-                      <LoadingDots color="white" style="large" />
+                    {showSecondLoading ? (
+                      <span className="pt-4 flex items-center justify-center">
+                      <Image
+                        src="/white-tick.png"
+                        width={20}
+                        height={20}
+                        alt="1 icon"
+                      />
+                      </span>
+                    ) : (
+                      <LoadingDots color="white" style="large" /> )}
                     </span>
                   </div>
                 </span>
@@ -269,7 +289,17 @@ export default function AGBM() {
                       </p>
                     </div>
                     <span className="pt-4">
-                      <LoadingDots color="white" style="large" />
+                    {showThirdLoading ? (
+                      <span className="pt-4 flex items-center justify-center">
+                      <Image
+                        src="/white-tick.png"
+                        width={20}
+                        height={20}
+                        alt="1 icon"
+                      />
+                      </span>
+                    ) : (
+                      <LoadingDots color="white" style="large" /> )}
                     </span>
                   </div>
                 </span>
@@ -289,7 +319,17 @@ export default function AGBM() {
                       </p>
                     </div>
                     <span className="pt-4">
-                      <LoadingDots color="white" style="large" />
+                    {showFourthLoading ? (
+                      <span className="pt-4 flex items-center justify-center">
+                      <Image
+                        src="/white-tick.png"
+                        width={20}
+                        height={20}
+                        alt="2 icon"
+                      />
+                      </span>
+                    ) : (
+                      <LoadingDots color="white" style="large" /> )}
                     </span>
                   </div>
                 </span>
@@ -302,14 +342,24 @@ export default function AGBM() {
                         src="/number-3-white.svg"
                         width={30}
                         height={30}
-                        alt="1 icon"
+                        alt="3 icon"
                       />
                       <p className="text-left font-medium">
                         Estimating biomass output image
                       </p>
                     </div>
                     <span className="pt-4">
-                      <LoadingDots color="white" style="large" />
+                    {restoredImage && originalPhoto ? (
+                      <span className="pt-4 flex items-center justify-center">
+                      <Image
+                        src="/white-tick.png"
+                        width={20}
+                        height={20}
+                        alt="3 icon"
+                      />
+                      </span>
+                    ) : (
+                      <LoadingDots color="white" style="large" /> )}
                     </span>
                   </div>
                 </span>
