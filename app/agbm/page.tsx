@@ -182,7 +182,7 @@ export default function AGBM() {
     <div className="flex max-w-6xl mx-auto flex-col items-center justify-center py-2 min-h-screen">
       <Header />
       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8">
-        <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
+        <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl">
           Generate <span className="text-blue-600">AGBM predictions </span>
         </h1>
         <ResizablePanel>
@@ -386,7 +386,7 @@ export default function AGBM() {
                         {/* Content for each carousel item */}
                         <div className="flex justify-between items-center w-full flex-col">
                           {restoredImage && (
-                            <h3>
+                            <h5>
                               Displaying File {index + 1}/{originalPhoto.length}
                               :{" "}
                               <span className="text-blue-600">
@@ -395,7 +395,7 @@ export default function AGBM() {
                                   .replace("/data/", "")
                                   .replace(".jpg", "")}
                               </span>
-                            </h3>
+                            </h5>
                           )}
                           <div
                             className={`${restoredLoaded
