@@ -70,6 +70,7 @@ const foldersToDeleteAndCreate = [
   'public/data',
   'public/preds',
   'public/shp2tif',
+  'public/download',
 ];
 const deleteAndCreateFolders = async () => {
   for (const folder of foldersToDeleteAndCreate) {
@@ -174,7 +175,15 @@ export async function POST(req: NextRequest) {
         console.log('restoredImage', restoredImage);
         console.log('dataArray', dataarr);
         console.log('originalPhoto', OriginalPhoto);
-      
+    
+    const fs = require('fs-extra');
+    try {
+      fs.copy("preds","public/download")
+      console.log('Files copied successfully!')
+    }catch(e){
+      console.error(e)
+    }
+    
     return NextResponse.json(
       {"restoredImage":restoredImage ? restoredImage : "Failed to restore image",
       "originalPhoto":OriginalPhoto ? OriginalPhoto : "Failed to upload original image",

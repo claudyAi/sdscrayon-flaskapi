@@ -535,7 +535,7 @@ export default function AGBM() {
                               <button
                                 onClick={() => {
                                   downloadPhoto(
-                                    restoredImage[index]!,
+                                    "/download/".concat(restoredImage[index]!.substring(7,restoredImage[index]!.length).replace(".jpg", ".tif")),
                                     appendNewToName(restoredImage[index]!)
                                   );
                                 }}
