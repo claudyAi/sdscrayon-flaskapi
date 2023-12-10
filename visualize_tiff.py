@@ -35,7 +35,7 @@ def visualise_tiff(folder):
 
         f = plt.figure()
         f.patch.set_facecolor('#17181C') 
-        plt.imshow(img) 
+        plt.imshow(img, cmap='hot') 
         plt.axis('off')
         plt.savefig(f'public/{folder}/{filename}')
 
