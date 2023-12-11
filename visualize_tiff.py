@@ -3,6 +3,8 @@ import numpy as np
 from osgeo import gdal as GD, gdal_array
 from pathlib import Path
 import os
+import cv2
+import PIL.Image as Image
 
 # take in filepath and filename
 def visualise_tiff(folder):
@@ -16,14 +18,17 @@ def visualise_tiff(folder):
         filepath = os.path.join(os.getcwd(), filepath)
         print("updated filepath", filepath)
         # print("python script file path",filepath)
-        data_set = GD.Open(filepath)
-        print("data_set", data_set)
-        filename = filename.replace('.tif','.jpg')
+
+        data_data_set = GD.Open(filepath)
+        preds_data_set = cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
+        # print("data_set", data_set)
+        filename = filename.replace('.tif','')
         print("python script file name",filename)
+
         if folder == 'data':
-            band_1 = data_set.GetRasterBand(1)
-            band_2 = data_set.GetRasterBand(2)
-            band_3 = data_set.GetRasterBand(3)
+            band_1 = data_data_set.GetRasterBand(1)
+            band_2 = data_data_set.GetRasterBand(2)
+            band_3 = data_data_set.GetRasterBand(3)
             b1 = band_1.ReadAsArray()  
             b2 = band_2.ReadAsArray()  
             b3 = band_3.ReadAsArray()   
@@ -31,16 +36,36 @@ def visualise_tiff(folder):
             f = plt.figure()
             f.patch.set_facecolor('#17181C') 
             plt.imshow(img) 
+            plt.axis('off')
+            plt.savefig(f'public/{folder}/{filename}.jpg')
         elif folder == 'preds':
-            band_1 = data_set.GetRasterBand(1)
-            b1 = band_1.ReadAsArray()    
-            img = b1
-            f = plt.figure()
-            f.patch.set_facecolor('#17181C') 
-            plt.imshow(img, cmap='hot') 
+            # band_1 = preds_data_set.GetRasterBand(1)
+            # b1 = band_1.ReadAsArray()    
+            # img = b1
+            # f = plt.figure()
+            # f.patch.set_facecolor('#17181C') 
+            # plt.imshow(img, cmap='hot') 
+            pred_colored = cv2.applyColorMap(preds_data_set, cv2.COLORMAP_OCEAN)
+            im = Image.fromarray(pred_colored)
 
-        plt.axis('off')
-        plt.savefig(f'public/{folder}/{filename}')
+            # Resize the image to 250x250
+            im_resized = im.resize((350, 350))
+
+            # Create a new blank image with size 640x480 and fill it with #17181C color
+            padded_image = Image.new('RGB', (640, 480), '#17181C')
+            
+            # Calculate the center coordinates for pasting the resized image
+            center_x = (640 - im_resized.width) // 2
+            center_y = (480 - im_resized.height) // 2
+
+            # Paste the resized image onto the padded image
+            padded_image.paste(im_resized, (center_x, center_y))
+
+            im.save(f"public/download/{filename}.tif", format="TIFF", save_all=True)
+            padded_image.save(f"public/{folder}/{filename}.jpg")
+
+        # plt.axis('off')
+        # plt.savefig(f'public/{folder}/{filename}')
 
     # band = data_set.GetRasterBand(1)
     # arr = band.ReadAsArray()

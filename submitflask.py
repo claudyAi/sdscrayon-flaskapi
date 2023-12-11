@@ -18,6 +18,7 @@ import numpy as np
 
 from pathlib import Path
 from skimage import io
+import cv2
 
 
 
@@ -163,6 +164,13 @@ def main():
 
     # loads model from a pth file from the location specified in args.model_path
     model = torch.load("./modelo_best.pth", map_location="cpu")
+    # # Save the model as a .pkl file using pickle
+    # with open('model.pkl', 'wb') as f:
+    #     pickle.dump(model, f)
+
+    # with open('model.pkl', 'rb') as f:
+    #     model = pickle.load(f)
+
     model = model.eval()
     model = model.cuda()
     model = model.to(memory_format=torch.channels_last)
@@ -209,7 +217,10 @@ def main():
                 # change something here? not sure
                 for pred, target in zip(logits, target):
                     original_name = Path(target).stem
-                    im = Image.fromarray(pred)
+
+                    # Apply the hot colormap
+                    pred_colored = cv2.applyColorMap(pred.astype('uint8'), cv2.COLORMAP_HOT)
+                    im = Image.fromarray(pred_colored)
                     im.save(out_dir / f"{original_name}_agbm.tif", format="TIFF", save_all=True)
 
                 torch.cuda.synchronize()
