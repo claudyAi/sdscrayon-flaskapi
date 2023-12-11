@@ -35,10 +35,10 @@ def visualise_tiff(folder):
             band_1 = data_set.GetRasterBand(1)
             b1 = band_1.ReadAsArray()    
             img = b1
-            f = plt.figure()
-            f.patch.set_facecolor('#17181C') 
-            plt.imshow(img, cmap='hot') 
 
+        f = plt.figure()
+        f.patch.set_facecolor('#17181C') 
+        plt.imshow(img) 
         plt.axis('off')
         plt.savefig(f'public/{folder}/{filename}')
 
