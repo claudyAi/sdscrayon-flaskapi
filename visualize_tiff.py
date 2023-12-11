@@ -28,9 +28,6 @@ def visualise_tiff(folder):
             b2 = band_2.ReadAsArray()  
             b3 = band_3.ReadAsArray()   
             img = np.dstack((b1, b2, b3)) 
-            f = plt.figure()
-            f.patch.set_facecolor('#17181C') 
-            plt.imshow(img) 
         elif folder == 'preds':
             band_1 = data_set.GetRasterBand(1)
             b1 = band_1.ReadAsArray()    
