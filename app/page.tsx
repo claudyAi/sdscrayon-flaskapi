@@ -34,7 +34,7 @@ export default function HomePage() {
                 <h3 className="mb-1 font-medium text-lg"> Validation.tif</h3>
                 <Image
                   alt="Validation tif image"
-                  src="/k89hotcci.png"
+                  src="/k89cci.png"
                   className="w-full object-cover h-96 rounded-2xl"
                   width={400}
                   height={400}
@@ -56,7 +56,7 @@ export default function HomePage() {
                   alt="Prediction tif image"
                   width={400}
                   height={400}
-                  src="/k89hotpred.png"
+                  src="/k89.png"
                   className="w-full object-cover h-96 rounded-2xl sm:mt-0 mt-2"
                 />
               </div>
