@@ -97,25 +97,35 @@ def removefiles(directory) :
         if os.path.isfile(f):
             os.remove(f)
 
-def convert_shp2tif(filepath, filename):
-    shapefile = gpd.read_file(filepath)
-    print(shapefile)
-    # list of polygons
-    grid = partition(shapefile.geometry[0])
-    # specify time
-    t = ("2022-02-01", "2022-02-28")
-    # visualisation
-    # fig, ax = plt.subplots(figsize=(15, 15))
-    # gpd.GeoSeries(grid).boundary.plot(ax=ax)
-    # gpd.GeoSeries(shapefile.geometry[7]).boundary.plot(ax=ax,color="red")
-    # plt.show()
-    # a = []
-    # a.append(grid[0])
-    # len(a)
-    convertedTifFilePath = get_tif(grid, filename)
-    print("convertedTifFilePath",convertedTifFilePath)
-    output_resizedFilePath = convertedTifFilePath.replace('public/shp2tif', 'data')
-    print("output_resizedFilePath", output_resizedFilePath)
-    resizefiles(convertedTifFilePath, output_resizedFilePath)
-    print("resizefiles", resizefiles)
-    return ({'filepath':output_resizedFilePath,'filename':f"{filename}_sent2.tif"})
+def convert_shp2tif(filepathlst, filenamelst):
+    output_pathlst = []
+    output_filenamelst = []
+    for filepath, filename in zip(filepathlst, filenamelst):
+        shapefile = gpd.read_file(filepath)
+        print(shapefile)
+        # list of polygons
+        outputlst = []
+        for i in range(len(shapefile)):
+            grid = partition(shapefile.geometry[i])
+            outputlst += grid
+        # specify time
+        t = ("2022-02-01", "2022-02-28")
+        # visualisation
+        # fig, ax = plt.subplots(figsize=(15, 15))
+        # gpd.GeoSeries(grid).boundary.plot(ax=ax)
+        # gpd.GeoSeries(shapefile.geometry[7]).boundary.plot(ax=ax,color="red")
+        # plt.show()
+        # a = []
+        # a.append(grid[0])
+        # len(a)
+        convertedTifFilePath = get_tif(grid, filename)
+        print("convertedTifFilePath",convertedTifFilePath)
+        output_resizedFilePath = convertedTifFilePath.replace('public/shp2tif', 'data')
+        print("output_resizedFilePath", output_resizedFilePath)     
+        resizefiles(convertedTifFilePath, output_resizedFilePath)
+        print("resizefiles", resizefiles)
+        
+        output_pathlst.append(output_resizedFilePath)
+        output_filenamelst.append(f"{filename}_sent2.tif")
+        
+    return ({'filepath':output_pathlst,'filename':output_filenamelst})

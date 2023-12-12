@@ -76,13 +76,18 @@ def convert_shp2tifff_files():
     filepath_list = request.form.getlist('filePath')
     filename_list = request.form.getlist('fileName')
 
+    rootlst = []
+    filepathlst = []
+
     for filepath, filename_with_extension in zip(filepath_list, filename_list):
         root, extension = os.path.splitext(filename_with_extension)
         if extension == '.shp':
             filename = root
             print("Filename without extension:", filename)
+            rootlst.append(filename)
+            filepathlst.append(filepath)
             
-    return jsonify(convert_shp2tif(filepath, filename))
+    return jsonify(convert_shp2tif(filepathlst, rootlst))
 
 if __name__ == '__main__':
     app.run(debug=True)
