@@ -120,7 +120,7 @@ def main():
     # torch.jit.enable_onednn_fusion(True)
 
     # loads model from a pth file from the location specified in args.model_path
-    model = torch.load("./modelo_best.pth", map_location="cpu")
+    model = torch.load("./model.pth", map_location="cpu")
     model = model.eval()
     model = model.cuda()
     model = model.to(memory_format=torch.channels_last)

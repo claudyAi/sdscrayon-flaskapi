@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_restful import Api
 
 from python_scripts.visualize_tif import visualise_tif
-from python_scripts.submitflask import main
+from python_scripts.run_model import main
 from python_scripts.shp2tif import convert_shp2tif
 from python_scripts.grid import find_array
 
