@@ -10,6 +10,7 @@ This project is a combination of a Next.js app and a Flask server integrated und
   - [Authentication](#authentication)
   - [File Replacement](#file-replacement)
   - [Start Development Server](#start-development-server)
+  - [Debug Error](#debug-error)
 
 ## How It Works
 
@@ -77,3 +78,7 @@ pnpm dev
 Access the app at [http://localhost:3000](http://localhost:3000).
 
 The Flask server will be running on [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
+### Debug Error
+
+If you happen to encounter an error: `errno: -4071` with `code: 'EINVAL'` related to `syscall:readlink`. Deleting the `.next` folder and re-running `npm run dev` can sometimes resolve such issues related to corrupted build artifacts or symbolic links.
