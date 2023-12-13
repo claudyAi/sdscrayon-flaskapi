@@ -4,6 +4,7 @@ This project is a combination of a Next.js app and a Flask server integrated und
 
 ## Table of Contents
 - [How It Works](#how-it-works)
+- [Download Model File](#download-model-file)
 - [Setup](#setup)
   - [Environment Setup](#environment-setup)
   - [Dependency Installation](#dependency-installation)
@@ -19,6 +20,19 @@ This project is a combination of a Next.js app and a Flask server integrated und
 This is implemented using [`next.config.js` rewrites](https://github.com/vercel/examples/blob/main/python/nextjs-flask/next.config.js) to map any request to `/api/:path*` to the Flask API, which is hosted in the `/api` folder.
 
 On localhost, the rewrite will be made to the `127.0.0.1:5000` port, which is where the Flask server is running.
+
+## Download Model File
+
+To use the pre-trained model for this project, follow these steps to download and save the `model.pth` file in the root directory:
+
+1. **Access the Model File**:
+   - Download the `model.pth` file [here](https://drive.google.com/drive/folders/1w74Ye16XEJrh27o4AK09qxgPPbpzjml3?usp=sharing).
+
+2. **Save in Root Directory**:
+   - Once downloaded, move the `model.pth` file to the root directory of this project.
+
+3. **Confirmation**:
+   - Ensure that `model.pth` is placed in the root directory before running the application.
 
 ## Setup
 
@@ -36,8 +50,12 @@ conda activate yourenvname
 Install Python dependencies:
 
 ```bash
+# installs Python packages listed in requirements.txt
 pip install -r requirements.txt
+# installs specific versions of PyTorch with CUDA support
 pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+# installs GDAL
+python -m pip install setup/GDAL-3.4.3-cp38-cp38-win_amd64.whl
 ```
 
 Install JavaScript dependencies:
@@ -45,14 +63,14 @@ Install JavaScript dependencies:
 ```bash
 npm install
 # or
-yarn
+yarn install
 # or
 pnpm install
 ```
 
 ### Authentication
 
-Run the authentication process in the `python_scripts` folder:
+Run the authentication process in the `setup` folder:
 
 ```bash
 jupyter notebook authenticate_connection.ipynb
@@ -61,7 +79,7 @@ jupyter notebook authenticate_connection.ipynb
 
 ### File Replacement
 
-Replace `decoder.py` in `path-to-conda-env\Lib\site-packages\segmentation_models_pytorch\decoders\unet` with the `decoder.py` file in `python_scripts` folder.
+Replace `decoder.py` in `path-to-conda-env\Lib\site-packages\segmentation_models_pytorch\decoders\unet` with the `decoder.py` file in `setup` folder.
 
 ### Start Development Server
 
