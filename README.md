@@ -1,5 +1,15 @@
-Next.js + Python app that uses Next.js as the frontend and Flask as the API backend. 
-One great use case of this is to write Next.js apps that use Python AI libraries on the backend.
+# Biomass Estimation Using Advanced Predictive Modeling
+
+This project is a combination of a Next.js app and a Flask server integrated under `/api/`.
+
+## Table of Contents
+- [How It Works](#how-it-works)
+- [Setup](#setup)
+  - [Environment Setup](#environment-setup)
+  - [Dependency Installation](#dependency-installation)
+  - [Authentication](#authentication)
+  - [File Replacement](#file-replacement)
+  - [Start Development Server](#start-development-server)
 
 ## How It Works
 
@@ -7,13 +17,30 @@ One great use case of this is to write Next.js apps that use Python AI libraries
 
 This is implemented using [`next.config.js` rewrites](https://github.com/vercel/examples/blob/main/python/nextjs-flask/next.config.js) to map any request to `/api/:path*` to the Flask API, which is hosted in the `/api` folder.
 
-On localhost, the rewrite will be made to the `127.0.0.1:8000` port, which is where the Flask server is running.
+On localhost, the rewrite will be made to the `127.0.0.1:5000` port, which is where the Flask server is running.
 
-In production, the Flask server is hosted as [Python serverless functions](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python) on Vercel.
+## Setup
 
-## Getting Started
+### Environment Setup
 
-First, install the dependencies:
+Ensure you have Python 3.8.10 installed. Create and activate a Conda environment:
+
+```bash
+conda create -n yourenvname python=3.8.10 
+conda activate yourenvname 
+```
+
+### Dependency Installation
+
+Install Python dependencies:
+
+```bash
+pip install -r requirements.txt
+
+pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+```
+
+Install JavaScript dependencies:
 
 ```bash
 npm install
@@ -23,7 +50,22 @@ yarn
 pnpm install
 ```
 
-Then, run the development server:
+### Authentication
+
+Run the authentication process in the `python_scripts` folder:
+
+```bash
+jupyter notebook authenticate_connection.ipynb
+# Execute all cells and follow authentication steps
+```
+
+### File Replacement
+
+Replace `decoder.py` in `path-to-conda-env\Lib\site-packages\segmentation_models_pytorch\decoders\unet` with the `decoder.py` file in `python_scripts` folder.
+
+### Start Development Server
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -33,7 +75,6 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Access the app at [http://localhost:3000](http://localhost:3000).
 
-The Flask server will be running on [http://127.0.0.1:8000](http://127.0.0.1:8000) – feel free to change the port in `package.json` (you'll also need to update it in `next.config.js`).
-
+The Flask server will be running on [http://127.0.0.1:5000](http://127.0.0.1:5000).
