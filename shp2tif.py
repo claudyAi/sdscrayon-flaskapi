@@ -1,14 +1,13 @@
 from shapely.geometry import Polygon
-import numpy as np
 from shapely.prepared import prep
-import geopandas as gpd
-import matplotlib.pyplot as plt
 from geojson import Feature
-import openeo
 from openeo.processes import ProcessBuilder
+from osgeo import gdal as GD 
+
+import numpy as np
 import geopandas as gpd
-import os
-from osgeo import gdal as GD  
+import openeo
+ 
 
 def grid_bounds(geom):
     minx, miny, maxx, maxy = geom.bounds
@@ -56,28 +55,7 @@ def get_tif(polygonlist, filename):
         s2_cube.download(f"public/shp2tif/{filename}_sent2.tif")
         return f"public/shp2tif/{filename}_sent2.tif"
 
-# # file resize
-# def resizefiles(directory):
-#     for filename in os.listdir(directory):
-#         f = os.path.join(directory, filename)
-#         # checking if it is a file
-#         if os.path.isfile(f):
-#             # print(filename)
-#             file_path = directory + filename # change accordingly
-#             # print(file_path)
-#             output_path = directory + "resized/" + filename # change accordingly
-#             # print(output_path)
-#             # gdal.translate -outsize 200 200 {file_path} {output_path}
-#             dataset = GD.Open(file_path)
-#             GD.Translate(output_path,dataset,width=200,height=200,resampleAlg='cubic')
-#             pass 
-
 # file resize
-# def resizefiles(convertedTifFilePath, output_resizedFilePath):
-#     dataset = GD.Open(convertedTifFilePath)
-#     GD.Translate(output_resizedFilePath,dataset,width=200,height=200,resampleAlg='cubic')
-#     return output_resizedFilePath 
-
 def resizefiles(convertedTifFilePath, output_resizedFilePath):
     try:
         dataset = GD.Open(convertedTifFilePath)
@@ -89,14 +67,8 @@ def resizefiles(convertedTifFilePath, output_resizedFilePath):
 
     return output_resizedFilePath
 
-# file cleanup
-def removefiles(directory) :
-    for filename in os.listdir(directory):
-        f = os.path.join(directory, filename)
-        # checking if it is a file
-        if os.path.isfile(f):
-            os.remove(f)
 
+# entire process of converting SHP file to TIF
 def convert_shp2tif(filepathlst, filenamelst):
     output_pathlst = []
     output_filenamelst = []
@@ -108,20 +80,12 @@ def convert_shp2tif(filepathlst, filenamelst):
         for i in range(len(shapefile)):
             grid = partition(shapefile.geometry[i])
             outputlst += grid
-        # specify time
-        t = ("2022-02-01", "2022-02-28")
-        # visualisation
-        # fig, ax = plt.subplots(figsize=(15, 15))
-        # gpd.GeoSeries(grid).boundary.plot(ax=ax)
-        # gpd.GeoSeries(shapefile.geometry[7]).boundary.plot(ax=ax,color="red")
-        # plt.show()
-        # a = []
-        # a.append(grid[0])
-        # len(a)
+        # convert SHP file to TIF 
         convertedTifFilePath = get_tif(grid, filename)
         print("convertedTifFilePath",convertedTifFilePath)
         output_resizedFilePath = convertedTifFilePath.replace('public/shp2tif', 'data')
-        print("output_resizedFilePath", output_resizedFilePath)     
+        print("output_resizedFilePath", output_resizedFilePath)   
+        # resize TIF file to desired shape  
         resizefiles(convertedTifFilePath, output_resizedFilePath)
         print("resizefiles", resizefiles)
         

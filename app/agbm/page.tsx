@@ -31,7 +31,6 @@ export default function AGBM() {
   const [restoredLoaded, setRestoredLoaded] = useState<boolean>(false);
   const [sideBySide, setSideBySide] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [photoName, setPhotoName] = useState<string | null>(null);
   const [fileInput, setFileInput] = useState<any>();
   const [showSecondLoading, setShowSecondLoading] = useState(false);
   const [showThirdLoading, setShowThirdLoading] = useState(false);
@@ -42,7 +41,6 @@ export default function AGBM() {
   const [dataArr, setDataArr] = useState(data);
   const [isShpFile, setIsShpFile] = useState(false); //js
   const [filesChosen, setFilesChosen] = useState(false);
-
 
   const handleMouseOver = () => {
     setIsShown(true);
@@ -68,16 +66,17 @@ export default function AGBM() {
     setTimeout(() => {
       setLoading(false);
     }, 1300);
-    setRestoredImage(newPhoto["restoredImage"]);
-    setOriginalPhoto(newPhoto["originalPhoto"]);
-    setDataArr(newPhoto["dataArray"].result);
+    setRestoredImage(newPhoto["restoredImage"]); // Predicted Image
+    setOriginalPhoto(newPhoto["originalPhoto"]); // Uploaded Image
+    setDataArr(newPhoto["dataArray"].result); // AGBM values of predicted image
     console.log("restoredImage at agbm", restoredImage);
     console.log("originalPhoto at agbm", originalPhoto);
     console.log("dataArray at agbm", dataArr);
   }
 
+  // After upload button is clicked
   const submitHandler = (event: any) => {
-    // handle validations
+    // Handle validations
     event.preventDefault();
     console.log("event", event.target);
     const data = new FormData(event.target);
@@ -87,6 +86,7 @@ export default function AGBM() {
     // Var that track if .shp file found
     let foundShpFile = false;
 
+    // Loop through uploaded files
     for (let i = 0; i < uploadedFiles.length; i++) {
       const indvFile: File = uploadedFiles[i] as File;
       console.log("indv files", indvFile.name);
@@ -141,7 +141,6 @@ export default function AGBM() {
     let timer;
     let secondTimer: string | number | NodeJS.Timeout | undefined;
     let thirdTimer: string | number | NodeJS.Timeout | undefined;
-    let fourthTimer: string | number | NodeJS.Timeout | undefined;
 
     if (loading) {
       if (isShpFile) {

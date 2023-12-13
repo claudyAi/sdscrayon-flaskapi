@@ -1,4 +1,3 @@
-import argparse
 import os
 
 os.environ["MKL_NUM_THREADS"] = "1"
@@ -7,7 +6,6 @@ os.environ["OMP_NUM_THREADS"] = "1"
 
 from pathlib import Path
 
-import pandas as pd
 import torch
 import torch.distributed
 import torch.utils
@@ -22,51 +20,11 @@ from skimage import io
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Check if using cuda device and torch version
 # print(f"Using {device} device")
 # print(torch.__version__)
 
-
-# def parse_args(args=None):
-#     parser = argparse.ArgumentParser()
-
-#     # change this to the frontend dir
-#     parser.add_argument( #THIS IS WHERE THE INPUT IMAGES COME FROM
-#         "--test-images-dir",
-#         type=str,
-#         help="path to test dir",
-#         default="./data", # change this to the local dir where the input is saved
-#     )
-#     # parser.add_argument( #THIS IS WHERE MODEL PTH FILE IS STORED 
-#     #     "--model-path",
-#     #     type=str,
-#     #     help="path models",
-#     #     required=False,
-#     #     default= './tf_efficientnetv2_l_in21k_f0_b8x1_e100_nrmse_devscse_attnlin_augs_decplus7_plus800eb_200ft/modelo_best.pth' , 
-#     # ) # change this to the local dir where the model pth is saved
-#     parser.add_argument( #THIS IS WHERE THE OUTPUT IMAGES GO
-#         "--out-dir",
-#         type=str,
-#         help="output directory",
-#         required=False,
-#         default= './preds' ,
-#     ) # change this to the local dir u want the output to go
-
-#     parser.add_argument(
-#         "--num-workers", type=int, help="number of data loader workers", default=8,
-#     )
-#     parser.add_argument("--batch-size", type=int, help="batch size", default=8)
-
-#     parser.add_argument(
-#         "--tta",
-#         type=int,
-#         help="tta",
-#         default=1,
-#     )
-#     parser.add_argument("--img-size", type=int, nargs=2, default=IMG_SIZE)
-
-#     args = parser.parse_args(args=args)
-
-#     return args
 
 s2_max = np.array(
     [255., 255., 255., 255., 255., 255., 255., 255., 255., 255., 255.],
@@ -206,7 +164,6 @@ def main():
                 logits = logits.squeeze(1).cpu().numpy()
 
 
-                # change something here? not sure
                 for pred, target in zip(logits, target):
                     original_name = Path(target).stem
                     im = Image.fromarray(pred)
@@ -214,6 +171,7 @@ def main():
 
                 torch.cuda.synchronize()
 
+    # frontend
     outputFilePaths = [f for f in Path(out_dir).iterdir() if f.is_file()]
     outputFilePaths_string = []
     outputFileNames_string = []
@@ -225,7 +183,6 @@ def main():
     print('outputFilePaths_string', outputFilePaths_string)
     print('outputFileNames_string', outputFileNames_string)
 
-    # frontend needs to recieve the image from here
     return ({'filepath':outputFilePaths_string, 'filename':outputFileNames_string})
 
 if __name__ == "__main__":
