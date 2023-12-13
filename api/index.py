@@ -2,10 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_restful import Api
 
-from visualize_tif import visualise_tif
-from submitflask import main
-from shp2tif import convert_shp2tif
-from grid import find_array
+from python_scripts.visualize_tif import visualise_tif
+from python_scripts.submitflask import main
+from python_scripts.shp2tif import convert_shp2tif
+from python_scripts.grid import find_array
 
 import os
 
