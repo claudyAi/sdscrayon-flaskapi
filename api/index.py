@@ -1,6 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask import jsonify
 from flask_restful import Api
 
 from visualize_tif import visualise_tif

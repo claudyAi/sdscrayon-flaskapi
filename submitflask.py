@@ -22,8 +22,8 @@ from skimage import io
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Check if using cuda device and torch version
-# print(f"Using {device} device")
-# print(torch.__version__)
+print(f"Using {device} device")
+print(torch.__version__)
 
 
 s2_max = np.array(
