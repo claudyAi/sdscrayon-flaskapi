@@ -116,6 +116,8 @@ Access the app at [http://localhost:3000](http://localhost:3000).
 
 The Flask server will be running on [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
+Uploaded shapefiles and TIF files will be saved in `data` folder and predicted TIF files will be saved in `preds` folder.
+
 ### Debug Error
 
 If you happen to encounter an error: `errno: -4071` with `code: 'EINVAL'` related to `syscall:readlink`. Deleting the `.next` folder and re-running `npm run dev` can sometimes resolve such issues related to corrupted build artifacts or symbolic links.
