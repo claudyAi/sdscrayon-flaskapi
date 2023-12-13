@@ -30,9 +30,7 @@ This is implemented using [`next.config.js` rewrites](https://github.com/vercel/
 On localhost, the rewrite will be made to the `127.0.0.1:5000` port, which is where the Flask server is running.
 
 ## Download Model File
-The pre-trained model has been developed with a training dataset of Sentinel 2 2000m x 2000m images, and a validation dataset of 2000m x 2000m Biomass CCI images.
-The input dataset is collated via the openEO API, and consists of 11-band Sentinel 2 images.
-The validation dataset is collected via manual clippings from the Biomass CCI dataset from the CEDA Archives at https://data.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v4.0/geotiff/2020.
+The pre-trained model has been developed with a training dataset of Sentinel 2 2000m x 2000m images, and a validation dataset of 2000m x 2000m Biomass CCI images. The input dataset is collated via the openEO API, and consists of 11-band Sentinel 2 images, while the validation dataset is collected via manual clippings from the Biomass CCI dataset from the CEDA Archives at https://data.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v4.0/geotiff/2020.
 
 To use the pre-trained model for this project, follow these steps to download and save the `model.pth` file in the root directory:
 
