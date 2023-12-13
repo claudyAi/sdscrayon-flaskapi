@@ -1,8 +1,16 @@
 # Biomass Estimation Using Advanced Predictive Modeling
 
-This project is a combination of a Next.js app and a Flask server integrated under `/api/`.
+## Project Description
+
+The aim of this project is to optimise the Aboveground Biomass (AGBM) estimation through improved predictive modeling and data utilization. We will be focusing on predicting the AGBM values for 2,000 x 2,000 meter patches of Australian forests.
+
+## Model Approach
+
+The project is based on an U-Net model with a shared encoder with aggregation via attention. The inputs to the encoder are 11-band images with a resolution of 200x200 from Sentinel-2 satellite missions. The outputs are aggregated via self-attention. Finally, a decoder takes as inputs the aggregated features and predicts the AGBM of the intended region. We directly optimize `RMSE` using `AdamW` optimizer and `CosineAnnelingLR` scheduler.
 
 ## Table of Contents
+- [Project Description](#project-description)
+- [Model Approach](#model-approach)
 - [How It Works](#how-it-works)
 - [Download Model File](#download-model-file)
 - [Setup](#setup)
@@ -15,7 +23,7 @@ This project is a combination of a Next.js app and a Flask server integrated und
 
 ## How It Works
 
- Python/Flask server mapped into to Next.js app under `/api/`.
+This project is a combination of a Next.js app and a Flask server integrated under `/api/`.
 
 This is implemented using [`next.config.js` rewrites](https://github.com/vercel/examples/blob/main/python/nextjs-flask/next.config.js) to map any request to `/api/:path*` to the Flask API, which is hosted in the `/api` folder.
 
