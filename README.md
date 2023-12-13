@@ -8,9 +8,19 @@ The aim of this project is to optimise the Aboveground Biomass (AGBM) estimation
 
 The project is based on an U-Net model with a shared encoder with aggregation via attention. The inputs to the encoder are 11-band images with a resolution of 200x200 from Sentinel-2 satellite missions. The outputs are aggregated via self-attention. Finally, a decoder takes as inputs the aggregated features and predicts the AGBM of the intended region. We directly optimize `RMSE` using `AdamW` optimizer and `CosineAnnelingLR` scheduler.
 
+## Hardware Used
+- Python 3.8
+- CUDA Version: 11.7
+- PyTorch 1.13
+- CPU: 2 socket Intel Xeon-Gold 6148 2.4GHz/20 core/150W Processor
+- Memory: Total: 512GB - 16x 32GB DDR4, 2666MHz
+- GPU cards: 4/8x V100 32 GB NVIDIA SXM2 GPU cards connected with NVLink
+
+
 ## Table of Contents
 - [Project Description](#project-description)
 - [Model Approach](#model-approach)
+- [Hardware Used](#hardware-used)
 - [How It Works](#how-it-works)
 - [Download Model File](#download-model-file)
 - [Setup](#setup)
